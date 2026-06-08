@@ -1,0 +1,445 @@
+.AdSlotAdminPage {
+  --adslot-bg: #f6f8fb;
+  --adslot-card: #ffffff;
+  --adslot-line: #d9e1ec;
+  --adslot-text: #1f2937;
+  --adslot-muted: #6b7280;
+  --adslot-primary: #2d6cdf;
+  --adslot-primary-soft: #e8f0ff;
+  --adslot-success: #15803d;
+  --adslot-success-soft: #eaf8ef;
+  --adslot-warning: #b45309;
+  --adslot-warning-soft: #fff4e5;
+  --adslot-danger: #b91c1c;
+  --adslot-danger-soft: #fdecec;
+  color: var(--adslot-text);
+}
+
+.AdSlotAdminPage-shell {
+  width: 100%;
+  max-width: none;
+  padding: 0 24px 24px;
+}
+
+.AdSlotAdminHero,
+.AdSlotAdminCard {
+  background: var(--adslot-card);
+  border: 1px solid var(--adslot-line);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.AdSlotAdminHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 28px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-top-width: 0;
+  background: linear-gradient(135deg, #f9fbff 0%, #eef4ff 100%);
+}
+
+.AdSlotAdminHero-eyebrow {
+  margin-bottom: 8px;
+  color: var(--adslot-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.AdSlotAdminHero h2,
+.AdSlotAdminCard-head h3 {
+  margin: 0;
+}
+
+.AdSlotAdminHero p,
+.AdSlotAdminCard-head p {
+  margin: 6px 0 0;
+  color: var(--adslot-muted);
+}
+
+.AdSlotAdminHero-side {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.AdSlotAdminHero-stat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 124px;
+  min-height: 42px;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid var(--adslot-line);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.AdSlotAdminHero-stat strong,
+.AdSlotAdminHero-stat span {
+  display: inline-block;
+}
+
+.AdSlotAdminHero-stat strong {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.AdSlotAdminHero-stat span {
+  color: var(--adslot-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.AdSlotAdminPrimaryButton,
+.AdSlotAdminGhostButton,
+.AdSlotAdminAction {
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.AdSlotAdminPrimaryButton {
+  background: var(--adslot-primary);
+  border-color: var(--adslot-primary);
+}
+
+.AdSlotAdminGhostButton,
+.AdSlotAdminAction {
+  background: #fff;
+  border: 1px solid var(--adslot-line);
+  color: var(--adslot-text);
+}
+
+.AdSlotAdminCard {
+  margin-bottom: 20px;
+}
+
+.AdSlotAdminCard-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px 0;
+}
+
+.AdSlotAdminToolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px 24px 24px;
+}
+
+.AdSlotAdminToolbar--config {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-bottom: 16px;
+}
+
+.AdSlotAdminField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.AdSlotAdminField span {
+  color: var(--adslot-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.AdSlotAdminField--search {
+  grid-column: span 2;
+}
+
+.AdSlotAdminToolbar-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.AdSlotAdminContactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.AdSlotAdminConfigGroups {
+  padding: 0 24px 18px;
+}
+
+.AdSlotAdminConfigLabel {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--adslot-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.AdSlotAdminConfigChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+}
+
+.AdSlotAdminConfigFooter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px 24px;
+}
+
+.AdSlotAdminGeneratedCode {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--adslot-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.AdSlotAdminGeneratedCode strong {
+  color: var(--adslot-primary);
+  font-size: 15px;
+}
+
+.AdSlotAdminGeneratedCode span {
+  color: var(--adslot-muted);
+  font-size: 12px;
+}
+
+.AdSlotAdminTableWrap {
+  overflow-x: auto;
+  padding: 16px 24px 24px;
+}
+
+.AdSlotAdminTable {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.AdSlotAdminTable thead th {
+  padding: 14px 12px;
+  border-top: 1px solid var(--adslot-line);
+  border-bottom: 1px solid var(--adslot-line);
+  background: var(--adslot-bg);
+  color: var(--adslot-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable tbody td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #edf2f7;
+  vertical-align: top;
+}
+
+.AdSlotAdminTable tbody tr:hover {
+  background: #fbfdff;
+}
+
+.AdSlotAdminTable-empty {
+  padding: 48px 12px !important;
+  color: var(--adslot-muted);
+  text-align: center;
+}
+
+.AdSlotAdminTable-colMerchant {
+  width: 18%;
+  min-width: 180px;
+}
+
+.AdSlotAdminTable-colLink {
+  width: 16%;
+  min-width: 150px;
+  max-width: 220px;
+}
+
+.AdSlotAdminTable-colLink a {
+  color: var(--adslot-primary);
+  word-break: break-all;
+}
+
+.AdSlotAdminTable-colTime {
+  width: 120px;
+  min-width: 148px;
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.AdSlotAdminTable-name {
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-sub {
+  margin-top: 6px;
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.AdSlotAdminTable-thumb {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid var(--adslot-line);
+  border-radius: 14px;
+  background: var(--adslot-bg);
+}
+
+.AdSlotAdminTable-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.AdSlotBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.AdSlotBadge.is-pending,
+.AdSlotBadge.is-hidden {
+  background: var(--adslot-warning-soft);
+  color: var(--adslot-warning);
+}
+
+.AdSlotBadge.is-approved,
+.AdSlotBadge.is-visible {
+  background: var(--adslot-success-soft);
+  color: var(--adslot-success);
+}
+
+.AdSlotBadge.is-rejected {
+  background: var(--adslot-danger-soft);
+  color: var(--adslot-danger);
+}
+
+.AdSlotAdminTable-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 8px;
+  width: fit-content;
+  max-width: none;
+}
+
+.AdSlotAdminTable th:last-child,
+.AdSlotAdminTable td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-actions .Button {
+  white-space: nowrap;
+}
+
+.AdSlotAdminAction.is-success {
+  color: var(--adslot-success);
+  border-color: rgba(21, 128, 61, 0.24);
+  background: var(--adslot-success-soft);
+}
+
+.AdSlotAdminAction.is-warning {
+  color: var(--adslot-warning);
+  border-color: rgba(180, 83, 9, 0.24);
+  background: var(--adslot-warning-soft);
+}
+
+.AdSlotAdminAction.is-danger {
+  color: var(--adslot-danger);
+}
+
+.AdSlotAdminPage-error {
+  margin: 16px 24px 0;
+  padding: 12px 14px;
+  border: 1px solid #f3c1c1;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: var(--adslot-danger);
+}
+
+.AdSlotAdminPage-notice {
+  margin: 16px 24px 0;
+  padding: 12px 14px;
+  border: 1px solid #b7dfc1;
+  border-radius: 12px;
+  background: #effcf3;
+  color: var(--adslot-success);
+}
+
+@media (max-width: 1100px) {
+  .AdSlotAdminToolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .AdSlotAdminField--search {
+    grid-column: span 1;
+  }
+
+  .AdSlotAdminToolbar--config {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .AdSlotAdminPage-shell {
+    padding: 0 12px 16px;
+  }
+
+  .AdSlotAdminHero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .AdSlotAdminHero-side {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .AdSlotAdminToolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminToolbar--config {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminContactGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminConfigFooter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .AdSlotAdminCard-head,
+  .AdSlotAdminToolbar,
+  .AdSlotAdminTableWrap,
+  .AdSlotAdminConfigGroups,
+  .AdSlotAdminConfigFooter {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

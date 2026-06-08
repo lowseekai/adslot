@@ -1,0 +1,26 @@
+{
+    "name": "doingfb/adslot",
+    "description": "Self-serve ad slot and provider wall extension draft for Flarum.",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Doingfb\\AdSlot\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "AdSlot",
+            "icon": {
+                "name": "fas fa-rectangle-ad",
+                "backgroundColor": "#d9a62e",
+                "color": "#1a1a1a"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -13,3 +13,10 @@ test_fixes.php
 
 # 其他临时文件
 views/
+
+# Node modules
+node_modules/
+js/node_modules/
+
+# Temporary files (already listed above but ensure coverage)
+tmp*/

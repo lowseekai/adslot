@@ -4,14 +4,13 @@ namespace Doingfb\AdSlot\Support;
 
 use Doingfb\AdSlot\Model\Item;
 use Flarum\User\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 class ItemRepository
 {
     public function queryVisible(): Builder
     {
-        $now = Carbon::now();
+        $now = AdSlotTime::now();
 
         return Item::query()
             ->where('status', 'approved')
@@ -24,8 +23,9 @@ class ItemRepository
                 $query->whereNull('ends_at')
                     ->orWhere('ends_at', '>=', $now);
             })
+            ->orderByDesc('is_pinned')
             ->orderBy('sort_order')
-            ->orderByDesc('id');
+            ->orderBy('id');
     }
 
     public function queryForUser(User $user): Builder

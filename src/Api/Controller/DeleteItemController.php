@@ -3,6 +3,7 @@
 namespace Doingfb\AdSlot\Api\Controller;
 
 use Doingfb\AdSlot\Model\Item;
+use Doingfb\AdSlot\Model\ItemRenewal;
 use Doingfb\AdSlot\Support\ImagePathManager;
 use Flarum\Http\RequestUtil;
 use Illuminate\Support\Arr;
@@ -25,7 +26,8 @@ class DeleteItemController implements RequestHandlerInterface
         $actor->assertAdmin();
 
         $item = $this->resolveItem($request);
-        $this->imagePathManager->deleteIfManaged($item->image_path);
+        $this->imagePathManager->deleteIfManagedAndUnused($item->image_path, $item->id);
+        ItemRenewal::query()->where('item_id', $item->id)->delete();
         $item->delete();
 
         return new EmptyResponse(204);

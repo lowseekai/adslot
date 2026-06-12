@@ -30,6 +30,7 @@ return [
                 $table->increments('id');
                 $table->string('code')->unique();
                 $table->decimal('amount', 10, 2)->default(0);
+                $table->unsignedSmallInteger('duration_months')->nullable();
                 $table->text('allowed_group_ids')->nullable();
                 $table->timestamp('starts_at')->nullable();
                 $table->timestamp('expires_at')->nullable();
@@ -37,6 +38,8 @@ return [
                 $table->unsignedInteger('used_by')->nullable();
                 $table->unsignedInteger('used_item_id')->nullable();
                 $table->timestamp('used_at')->nullable();
+                $table->unsignedInteger('usage_limit')->default(1);
+                $table->unsignedInteger('used_count')->default(0);
                 $table->boolean('is_used')->default(false);
                 $table->timestamps();
 

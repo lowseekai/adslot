@@ -23,6 +23,12 @@ class ListMyItemsController extends AbstractListController
         $actor = RequestUtil::getActor($request);
         $actor->assertRegistered();
 
-        return $this->items->queryForUser($actor)->get();
+        return $this->items
+            ->queryForUser($actor)
+            ->with('pendingRenewals')
+            ->where('adslot_items.user_id', (int) $actor->id)
+            ->get()
+            ->filter(fn ($item) => (int) $item->user_id === (int) $actor->id)
+            ->values();
     }
 }

@@ -18,7 +18,7 @@ return [
                 $table->string('discount_code')->nullable();
                 $table->string('status')->default('pending');
                 $table->boolean('is_visible')->default(false);
-                $table->integer('sort_order')->default(0);
+                $table->integer('sort_order')->default(1);
                 $table->timestamp('starts_at')->nullable();
                 $table->timestamp('ends_at')->nullable();
                 $table->text('review_note')->nullable();

@@ -1,30 +1,36 @@
 import app from 'flarum/forum/app';
+import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import Page from 'flarum/common/components/Page';
-import ApplyModal from './ApplyModal';
+
+const OPEN_APPLY_MODAL_KEY = 'doingfb-adslot.open-apply-modal';
 
 export default class ApplyPage extends Page {
   oninit(vnode) {
     super.oninit(vnode);
-    this.opened = false;
+    this.redirecting = false;
   }
 
   oncreate(vnode) {
     super.oncreate(vnode);
+    this.redirectAndOpen();
+  }
 
-    if (this.opened) {
+  redirectAndOpen() {
+    if (this.redirecting) {
       return;
     }
 
-    this.opened = true;
+    this.redirecting = true;
+    m.redraw();
 
-    app.modal.show(ApplyModal, {
-      onclose: () => {
-        if (app.current.get('routeName') === 'adslotApply') {
-          m.route.set(app.route('adslotProviders'));
-        }
-      },
-    });
+    window.localStorage?.setItem(OPEN_APPLY_MODAL_KEY, String(Date.now()));
+    m.route.set(app.route('adslotProviders'));
+
+    window.setTimeout(() => {
+      this.redirecting = false;
+      m.redraw();
+    }, 0);
   }
 
   view() {
@@ -32,8 +38,16 @@ export default class ApplyPage extends Page {
       <div className="AdSlotApplyPage">
         <div className="container">
           <div className="AdSlotApplyPageState">
-            <LoadingIndicator display="block" />
-            <p>正在打开申请弹窗...</p>
+            {this.redirecting ? <LoadingIndicator display="block" /> : null}
+            <p>姝ｅ湪鎵撳紑鐢宠寮圭獥...</p>
+            {Button.component(
+              {
+                className: 'Button',
+                onclick: () => this.redirectAndOpen(),
+                disabled: this.redirecting,
+              },
+              '绔嬪嵆鎵撳紑鐢宠寮圭獥'
+            )}
           </div>
         </div>
       </div>

@@ -129,6 +129,14 @@
   padding: 22px 24px 0;
 }
 
+.AdSlotAdminCard-headActions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .AdSlotAdminToolbar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -138,7 +146,33 @@
 
 .AdSlotAdminToolbar--config {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  justify-content: start;
+  align-items: end;
+  gap: 10px;
   padding-bottom: 16px;
+}
+
+.AdSlotAdminToolbar--config .AdSlotAdminField,
+.AdSlotAdminToolbar--config .FormControl {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.AdSlotAdminToolbar--reviewFilters {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 0;
+}
+
+.AdSlotAdminToolbar--reviewFilters .AdSlotAdminField {
+  min-width: 120px;
+}
+
+.AdSlotAdminToolbar--reviewFilters .AdSlotAdminField--search {
+  min-width: 180px;
+  grid-column: auto;
 }
 
 .AdSlotAdminField {
@@ -160,6 +194,7 @@
 .AdSlotAdminToolbar-actions {
   display: flex;
   align-items: flex-end;
+  gap: 10px;
 }
 
 .AdSlotAdminContactGrid {
@@ -168,8 +203,281 @@
   gap: 16px;
 }
 
+.AdSlotAdminConfigSections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 2px 24px 24px;
+}
+
+.AdSlotAdminConfigSection {
+  padding: 16px;
+  border: 1px solid rgba(109, 123, 146, 0.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(246, 249, 253, 0.92)),
+    rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.AdSlotAdminConfigSection.is-collapsed {
+  padding-bottom: 14px;
+}
+
+.AdSlotAdminConfigSection-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.AdSlotAdminConfigSection.is-collapsed .AdSlotAdminConfigSection-head {
+  margin-bottom: 0;
+}
+
+.AdSlotAdminConfigSection-head h4 {
+  margin: 0 0 5px;
+  color: var(--adslot-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.AdSlotAdminConfigSection-head p {
+  margin: 0;
+  max-width: 720px;
+  color: var(--adslot-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.AdSlotAdminConfigSection-head .Button {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.AdSlotAdminConfigSection-headActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.AdSlotAdminConfigSection .AdSlotAdminToolbar,
+.AdSlotAdminConfigSection .AdSlotAdminNoticeConfig,
+.AdSlotAdminConfigSection .AdSlotAdminConfigGroups,
+.AdSlotAdminConfigSection .AdSlotAdminConfigSection-footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.AdSlotAdminConfigSection .AdSlotAdminToolbar {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.AdSlotAdminConfigSection .AdSlotAdminField {
+  gap: 6px;
+}
+
+.AdSlotAdminConfigSection-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
 .AdSlotAdminConfigGroups {
   padding: 0 24px 18px;
+}
+
+.AdSlotAdminNoticeConfig {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 16px;
+  padding: 0 24px 18px;
+}
+
+.AdSlotAdminPaymentConfig {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+  padding: 0 24px 18px;
+}
+
+.AdSlotAdminField--full {
+  grid-column: 1 / -1;
+}
+
+.AdSlotAdminPaymentConfig .FormControl {
+  width: 100%;
+  max-width: none;
+}
+
+.AdSlotAdminPaymentConfig textarea.FormControl {
+  min-height: 96px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.AdSlotAdminQrUploadField {
+  gap: 10px;
+}
+
+.AdSlotAdminUploadCard {
+  display: block;
+  border: 1px dashed rgba(45, 108, 223, 0.28);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(238, 244, 255, 0.9)),
+    rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.AdSlotAdminUploadCard:hover {
+  border-color: rgba(45, 108, 223, 0.42);
+  box-shadow: 0 10px 24px rgba(45, 108, 223, 0.08);
+  transform: translateY(-1px);
+}
+
+.AdSlotAdminUploadCard.is-uploading {
+  cursor: progress;
+  opacity: 0.82;
+}
+
+.AdSlotAdminUploadInput {
+  display: none;
+}
+
+.AdSlotAdminUploadCard-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+}
+
+.AdSlotAdminUploadIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(45, 108, 223, 0.1);
+  color: var(--adslot-primary);
+  font-size: 18px;
+}
+
+.AdSlotAdminUploadText {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.AdSlotAdminUploadText strong {
+  color: var(--adslot-text);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.AdSlotAdminUploadText span {
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.AdSlotAdminUploadPreviewGroup {
+  display: grid;
+  gap: 10px;
+}
+
+.AdSlotAdminUploadPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 14px;
+  border: 1px solid rgba(217, 226, 236, 0.96);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
+    repeating-linear-gradient(45deg, rgba(148, 163, 184, 0.06) 0, rgba(148, 163, 184, 0.06) 8px, transparent 8px, transparent 16px);
+}
+
+.AdSlotAdminUploadPreview img {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.AdSlotAdminUploadActions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.AdSlotAdminUploadHint {
+  margin: 0;
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.AdSlotAdminNoticeToggle {
+  margin: 0;
+}
+
+.AdSlotAdminField--noticeText {
+  min-width: 0;
+}
+
+.AdSlotAdminField--noticeText .FormControl {
+  width: 100%;
+  max-width: none;
+  min-height: 108px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.AdSlotAdminNoticePreview {
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid rgba(122, 98, 21, 0.18);
+  border-radius: 8px;
+  background: #FFF2AE;
+  color: #3d3520;
+}
+
+.AdSlotAdminNoticePreview .ActHubNoticeBar-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 8px 0;
+}
+
+.AdSlotAdminNoticePreview .ActHubNoticeBar-icon {
+  flex: 0 0 auto;
+  color: #8a6d10;
+}
+
+.AdSlotAdminNoticePreview .ActHubNoticeBar-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .AdSlotAdminConfigLabel {
@@ -213,21 +521,253 @@
   font-size: 12px;
 }
 
+.AdSlotAdminToolbar--discountCreate {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
+  align-items: end;
+}
+
+.AdSlotAdminToolbar--discountCreate .AdSlotAdminField,
+.AdSlotAdminToolbar--discountCreate .FormControl {
+  width: 100%;
+  min-width: 0;
+}
+
+.AdSlotAdminToolbar--discountFilters {
+  grid-template-columns: minmax(120px, 160px) minmax(220px, 320px) auto;
+  justify-content: start;
+  align-items: end;
+}
+
+.AdSlotAdminDiscountCreateMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.AdSlotAdminDiscountCreateMeta span {
+  color: var(--adslot-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.AdSlotAdminDiscountCreateMeta strong {
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--adslot-line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--adslot-text);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.AdSlotAdminTable--discountCodes {
+  min-width: 1080px;
+  table-layout: fixed;
+}
+
+.AdSlotAdminToolbar--renewalFilters {
+  grid-template-columns: minmax(120px, 160px) minmax(220px, 320px) max-content;
+  justify-content: start;
+  align-items: end;
+  gap: 10px;
+}
+
+.AdSlotAdminToolbar--renewalFilters .AdSlotAdminField--search {
+  grid-column: auto;
+}
+
+.AdSlotAdminTable--renewals {
+  min-width: 1180px;
+  table-layout: fixed;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(1),
+.AdSlotAdminTable--renewals td:nth-child(1) {
+  width: 64px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(2),
+.AdSlotAdminTable--renewals td:nth-child(2) {
+  width: 190px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(3),
+.AdSlotAdminTable--renewals td:nth-child(3) {
+  width: 92px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(4),
+.AdSlotAdminTable--renewals td:nth-child(4) {
+  width: 170px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(5),
+.AdSlotAdminTable--renewals td:nth-child(5) {
+  width: 78px;
+  text-align: center;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(6),
+.AdSlotAdminTable--renewals td:nth-child(6),
+.AdSlotAdminTable--renewals th:nth-child(7),
+.AdSlotAdminTable--renewals td:nth-child(7) {
+  width: 104px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(8),
+.AdSlotAdminTable--renewals td:nth-child(8) {
+  width: 92px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(9),
+.AdSlotAdminTable--renewals td:nth-child(9) {
+  width: 132px;
+}
+
+.AdSlotAdminTable--renewals th:nth-child(10),
+.AdSlotAdminTable--renewals td:nth-child(10) {
+  width: 72px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(1),
+.AdSlotAdminTable--discountCodes td:nth-child(1) {
+  width: 64px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(2),
+.AdSlotAdminTable--discountCodes td:nth-child(2) {
+  width: 172px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(3),
+.AdSlotAdminTable--discountCodes td:nth-child(3) {
+  width: 92px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(4),
+.AdSlotAdminTable--discountCodes td:nth-child(4) {
+  width: 110px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(5),
+.AdSlotAdminTable--discountCodes td:nth-child(5) {
+  width: 210px;
+}
+
+.AdSlotAdminTable--discountCodes th:nth-child(6),
+.AdSlotAdminTable--discountCodes td:nth-child(6),
+.AdSlotAdminTable--discountCodes th:nth-child(7),
+.AdSlotAdminTable--discountCodes td:nth-child(7) {
+  width: 172px;
+}
+
+.AdSlotAdminTable--discountCodes th.AdSlotDiscountCodeTable-statusHead,
+.AdSlotAdminTable--discountCodes td.AdSlotDiscountCodeTable-status,
+.AdSlotAdminTable--discountCodes th.AdSlotDiscountCodeTable-dateHead,
+.AdSlotAdminTable--discountCodes td.AdSlotDiscountCodeTable-date {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.AdSlotAdminTable--discountCodes .AdSlotDiscountCodeTable-statusCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+.AdSlotDiscountCodeTable-usage {
+  color: var(--adslot-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable--discountCodes .AdSlotDiscountCodeTable-dateCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.AdSlotDiscountCodeTable-codeCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.AdSlotDiscountCodeTable-codeCell strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--adslot-primary);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AdSlotDiscountCodeTable-date {
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.AdSlotDiscountCodeTable-date span {
+  display: inline-flex;
+  margin-top: 3px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+.AdSlotBadge.is-discount-available {
+  background: var(--adslot-success-soft);
+  color: var(--adslot-success);
+}
+
+.AdSlotBadge.is-discount-used {
+  background: var(--adslot-primary-soft);
+  color: var(--adslot-primary);
+}
+
+.AdSlotBadge.is-discount-expired {
+  background: var(--adslot-danger-soft);
+  color: var(--adslot-danger);
+}
+
 .AdSlotAdminTableWrap {
   overflow-x: auto;
-  padding: 16px 24px 24px;
+  display: block;
+  width: 100%;
+  padding: 12px 20px 20px;
 }
 
 .AdSlotAdminTable {
   width: 100%;
-  min-width: 980px;
+  min-width: 1320px;
   border-collapse: separate;
   border-spacing: 0;
   background: #fff;
 }
 
+.AdSlotAdminTable--compact {
+  width: 100%;
+  min-width: 1320px;
+  table-layout: fixed;
+}
+
 .AdSlotAdminTable thead th {
-  padding: 14px 12px;
+  padding: 8px 6px;
   border-top: 1px solid var(--adslot-line);
   border-bottom: 1px solid var(--adslot-line);
   background: var(--adslot-bg);
@@ -239,9 +779,9 @@
 }
 
 .AdSlotAdminTable tbody td {
-  padding: 16px 12px;
+  padding: 6px 5px;
   border-bottom: 1px solid #edf2f7;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .AdSlotAdminTable tbody tr:hover {
@@ -255,48 +795,271 @@
 }
 
 .AdSlotAdminTable-colMerchant {
-  width: 18%;
-  min-width: 180px;
+  width: 220px;
+  min-width: 220px;
 }
 
-.AdSlotAdminTable-colLink {
-  width: 16%;
-  min-width: 150px;
-  max-width: 220px;
-}
-
-.AdSlotAdminTable-colLink a {
-  color: var(--adslot-primary);
-  word-break: break-all;
-}
-
-.AdSlotAdminTable-colTime {
-  width: 120px;
-  min-width: 148px;
-  color: var(--adslot-muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.AdSlotAdminTable-name {
+.AdSlotAdminTable-colId {
+  width: 58px;
+  white-space: nowrap;
   font-weight: 700;
 }
 
+.AdSlotAdminTable-colThumb {
+  width: 52px;
+  min-width: 52px;
+  text-align: center;
+}
+
+.AdSlotAdminTable thead th:nth-child(3),
+.AdSlotAdminTable thead th:nth-child(5),
+.AdSlotAdminTable tbody td.AdSlotAdminTable-colThumb {
+  text-align: center;
+}
+
+.AdSlotAdminTable-colLink {
+  width: 252px;
+  min-width: 252px;
+  max-width: none;
+}
+
+.AdSlotAdminTable-link,
+.AdSlotAdminTable-colLink a {
+  color: var(--adslot-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-link--dense {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.AdSlotAdminTable-colTime {
+  width: 110px;
+  min-width: 110px;
+  color: var(--adslot-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.AdSlotAdminTable-colTimeRange {
+  width: 88px;
+  min-width: 88px;
+}
+
+.AdSlotAdminTable-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 96px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .AdSlotAdminTable-sub {
-  margin-top: 6px;
   color: var(--adslot-muted);
   font-size: 12px;
-  line-height: 1.5;
-  word-break: break-all;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-sub.is-strong {
+  color: var(--adslot-text);
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.AdSlotAdminTable-stack--tight {
+  gap: 4px;
+}
+
+.AdSlotAdminTable-inlineCluster {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.AdSlotAdminTable-inlineCluster--merchant,
+.AdSlotAdminTable-inlineCluster--link {
+  flex-wrap: nowrap;
+}
+
+.AdSlotAdminTable-inlineCluster--nowrap {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.AdSlotAdminTable-inlineCluster > * {
+  min-width: 0;
+}
+
+.AdSlotAdminTable-primaryLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.AdSlotAdminTable-primaryLine--merchant,
+.AdSlotAdminTable-primaryLine--link {
+  gap: 6px;
+}
+
+.AdSlotAdminTable-inlineSummary {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.AdSlotAdminTable-inlineSummary--merchant,
+.AdSlotAdminTable-inlineSummary--link {
+  gap: 6px;
+}
+
+.AdSlotAdminTable-chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.AdSlotAdminTable-chipRow--compact {
+  gap: 4px;
+}
+
+.AdSlotAdminTable-chipRow--nowrap {
+  flex-wrap: nowrap;
+}
+
+.AdSlotAdminTable-chipRow--end {
+  margin-left: 0;
+  flex: 0 0 auto;
+}
+
+.AdSlotAdminTable-inlineMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.AdSlotAdminTable-inlineMeta i {
+  flex: 0 0 auto;
+  width: 12px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.AdSlotAdminTable-inlineMeta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-inlineMeta--compact {
+  gap: 2px;
+  min-height: 18px;
+}
+
+.AdSlotAdminTable-colSettlement {
+  width: 176px;
+  min-width: 176px;
+}
+
+.AdSlotAdminTable-colState {
+  width: 126px;
+  min-width: 126px;
+}
+
+.AdSlotAdminTable-inlineMetaValue {
+  display: inline-block;
+  flex: 0 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--adslot-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.AdSlotAdminTable-inlineMeta--contact {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.AdSlotAdminTable-inlineMeta--chip {
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--adslot-line);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.AdSlotAdminTable-codeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  width: fit-content;
+  padding: 1px 5px;
+  border-radius: 9px;
+  background: #f5f8ff;
+  color: var(--adslot-primary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.AdSlotAdminTable-codeTag.is-muted {
+  background: #f8fafc;
+  color: var(--adslot-muted);
+}
+
+.AdSlotAdminTable-codeTag i {
+  flex: 0 0 auto;
+}
+
+.AdSlotAdminTable-codeTag span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .AdSlotAdminTable-thumb {
-  width: 72px;
-  height: 72px;
+  width: 40px;
+  height: 40px;
   overflow: hidden;
   border: 1px solid var(--adslot-line);
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--adslot-bg);
+  margin: 0 auto;
 }
 
 .AdSlotAdminTable-thumb img {
@@ -306,14 +1069,30 @@
   object-fit: cover;
 }
 
+.AdSlotAdminTable-thumbPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  border: 1px dashed var(--adslot-line);
+  border-radius: 10px;
+  background: #fafcff;
+  color: var(--adslot-muted);
+  font-size: 11px;
+  line-height: 1.15;
+  text-align: center;
+}
+
 .AdSlotBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 70px;
-  padding: 5px 10px;
+  min-width: 0;
+  padding: 1px 6px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -335,23 +1114,395 @@
   color: var(--adslot-danger);
 }
 
+.AdSlotAdminTable-chip--accent {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.AdSlotAdminTable-statusRow {
+  margin-top: 6px;
+}
+
+.AdSlotAdminTable-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.AdSlotAdminTable-metrics--inline {
+  gap: 4px;
+}
+
+.AdSlotAdminTable-pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.AdSlotAdminTable-statGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.AdSlotAdminTable-statGrid--compact {
+  gap: 3px;
+}
+
+.AdSlotAdminTable-stateGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 3px;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.AdSlotAdminTable-stateGrid--compact {
+  gap: 2px;
+}
+
+.AdSlotAdminTable-stateGrid--nowrap {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-settlementLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  justify-content: flex-start;
+}
+
+.AdSlotAdminTable-settlementToken {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  min-width: 0;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: var(--adslot-text);
+}
+
+.AdSlotAdminTable-settlementToken.is-fee {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.AdSlotAdminTable-settlementToken.is-discount {
+  background: #fff7ed;
+  color: var(--adslot-warning);
+}
+
+.AdSlotAdminTable-settlementToken.is-payable {
+  background: #eefcf2;
+  color: var(--adslot-success);
+}
+
+.AdSlotAdminTable-settlementToken.is-strong {
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-settlementLabel {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.78;
+  flex: 0 0 auto;
+}
+
+.AdSlotAdminTable-settlementValue {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1;
+  max-width: 38px;
+}
+
+.AdSlotAdminTable-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid var(--adslot-line);
+  border-radius: 999px;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-pill--stacked {
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 2px 6px;
+}
+
+.AdSlotAdminTable-pill.is-strong {
+  border-color: rgba(45, 108, 223, 0.2);
+  background: #f5f8ff;
+}
+
+.AdSlotAdminTable-pillLabel {
+  color: var(--adslot-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-pillValue {
+  color: var(--adslot-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-pill.is-strong .AdSlotAdminTable-pillValue {
+  color: var(--adslot-primary);
+}
+
+.AdSlotAdminTable-metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  color: var(--adslot-muted);
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-metric strong {
+  color: var(--adslot-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.AdSlotAdminTable-metric.is-strong strong {
+  color: var(--adslot-primary);
+}
+
+.AdSlotAdminTable-badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.AdSlotAdminTable-badgeRow--tight {
+  gap: 5px;
+}
+
+.AdSlotAdminTable-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 1px 6px;
+  border: 1px solid var(--adslot-line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--adslot-muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-chip--soft {
+  background: #fafcff;
+}
+
+.AdSlotAdminTable-muted {
+  color: var(--adslot-muted);
+  font-size: 12px;
+}
+
+.AdSlotAdminTable-colActions,
+.AdSlotAdminTable th:last-child,
+.AdSlotAdminTable td:last-child {
+  width: 108px;
+  min-width: 108px;
+}
+
 .AdSlotAdminTable-actions {
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  gap: 8px;
-  width: fit-content;
-  max-width: none;
-}
-
-.AdSlotAdminTable th:last-child,
-.AdSlotAdminTable td:last-child {
-  width: 1%;
-  white-space: nowrap;
+  gap: 2px;
+  max-width: 108px;
 }
 
 .AdSlotAdminTable-actions .Button {
   white-space: nowrap;
+  min-width: 20px;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 11px;
+}
+
+.AdSlotAdminAction--icon {
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0;
+  justify-content: center;
+}
+
+.AdSlotAdminAction--icon .Button-label {
+  display: none;
+}
+
+.AdSlotAdminAction--icon .Button-icon {
+  margin-right: 0;
+}
+
+.AdSlotAdminThumbButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.AdSlotAdminThumbButton:hover .AdSlotAdminTable-thumb {
+  border-color: var(--adslot-primary);
+  box-shadow: 0 10px 20px rgba(45, 108, 223, 0.12);
+  transform: translateY(-1px);
+}
+
+.AdSlotAdminThumbButton .AdSlotAdminTable-thumb {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.AdSlotAdminTable-settlementLine--nowrap {
+  flex-wrap: nowrap;
+}
+
+.AdSlotAdminTable-timeRange {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--adslot-muted);
+  font-size: 11px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable-timeText {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.AdSlotAdminTable tbody td {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.AdSlotAdminTable thead th {
+  font-size: 13px;
+}
+
+.AdSlotAdminTable-name,
+.AdSlotAdminTable-link,
+.AdSlotAdminTable-colLink a {
+  font-size: 13px;
+}
+
+.AdSlotAdminTable-inlineMeta,
+.AdSlotAdminTable-inlineMetaValue,
+.AdSlotAdminTable-sub,
+.AdSlotAdminTable-muted,
+.AdSlotAdminTable-timeRange,
+.AdSlotAdminTable-colTime {
+  font-size: 12px;
+}
+
+.AdSlotAdminTable-codeTag,
+.AdSlotBadge,
+.AdSlotAdminTable-chip,
+.AdSlotAdminTable-pillLabel,
+.AdSlotAdminTable-pillValue,
+.AdSlotAdminTable-metric,
+.AdSlotAdminTable-metric strong {
+  font-size: 12px;
+}
+
+.AdSlotAdminTable-settlementLabel {
+  font-size: 11px;
+}
+
+.AdSlotAdminTable-settlementValue {
+  max-width: 42px;
+  font-size: 12px;
+}
+
+.AdSlotAdminTableFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px 24px;
+}
+
+.AdSlotAdminTableFooter-copy {
+  color: var(--adslot-muted);
+  font-size: 13px;
+}
+
+.AdSlotAdminTableFooter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.AdSlotAdminTableFooter-copy strong {
+  color: var(--adslot-text);
+}
+
+.AdSlotImagePreviewModal .Modal-content {
+  max-width: 820px;
+}
+
+.AdSlotImagePreviewModal-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.AdSlotImagePreviewModal-body img {
+  display: block;
+  max-width: 100%;
+  max-height: 72vh;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+}
+
+.doingfb-adslot-Page .ExtensionPage-settings > .container {
+  max-width: none;
+  width: 100%;
+  padding: 0;
+}
+
+.doingfb-adslot-Page .ExtensionPage-settings > .container > .Form > .Form-group:last-child {
+  display: none;
+}
+
+.AdSlotReviewsPage .App-titleControl {
+  display: none;
 }
 
 .AdSlotAdminAction.is-success {
@@ -368,6 +1519,68 @@
 
 .AdSlotAdminAction.is-danger {
   color: var(--adslot-danger);
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon {
+  position: relative;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:hover,
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:focus {
+  border-color: transparent;
+  background: rgba(15, 23, 42, 0.06);
+  box-shadow: none;
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon::after {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(2px);
+  padding: 4px 7px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  content: attr(aria-label);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon::before {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(2px);
+  border: 5px solid transparent;
+  border-top-color: rgba(15, 23, 42, 0.92);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:hover::after,
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:hover::before,
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:focus::after,
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon:focus::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.AdSlotAdminTable-actions .AdSlotAdminAction--icon.is-active {
+  border-color: rgba(190, 24, 93, 0.28);
+  background: #fff1f2;
+  color: #be123c;
 }
 
 .AdSlotAdminPage-error {
@@ -400,6 +1613,23 @@
   .AdSlotAdminToolbar--config {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .AdSlotAdminToolbar--discountCreate,
+  .AdSlotAdminToolbar--discountFilters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .AdSlotAdminNoticeConfig {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminConfigSection-head {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminConfigSection-head .Button {
+    justify-self: start;
+  }
 }
 
 @media (max-width: 760px) {
@@ -425,6 +1655,15 @@
     grid-template-columns: 1fr;
   }
 
+  .AdSlotAdminPaymentConfig {
+    grid-template-columns: 1fr;
+  }
+
+  .AdSlotAdminToolbar--discountCreate,
+  .AdSlotAdminToolbar--discountFilters {
+    grid-template-columns: 1fr;
+  }
+
   .AdSlotAdminContactGrid {
     grid-template-columns: 1fr;
   }
@@ -434,11 +1673,26 @@
     align-items: stretch;
   }
 
+  .AdSlotAdminConfigSection-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .AdSlotAdminCard-headActions,
+  .AdSlotAdminTableFooter,
+  .AdSlotAdminTableFooter-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .AdSlotAdminCard-head,
+  .AdSlotAdminConfigSections,
   .AdSlotAdminToolbar,
   .AdSlotAdminTableWrap,
+  .AdSlotAdminNoticeConfig,
   .AdSlotAdminConfigGroups,
-  .AdSlotAdminConfigFooter {
+  .AdSlotAdminConfigFooter,
+  .AdSlotAdminTableFooter {
     padding-left: 16px;
     padding-right: 16px;
   }

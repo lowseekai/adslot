@@ -21,21 +21,52 @@ class GetAdminConfigController implements RequestHandlerInterface
     {
         $actor = RequestUtil::getActor($request);
         $actor->assertAdmin();
+        $discountEnabledGroupIds = array_values(array_filter(
+            $this->settings->getDiscountEnabledGroupIds(),
+            fn ($id) => (int) $id !== Group::GUEST_ID
+        ));
 
         return new JsonResponse([
             'data' => [
                 'baseMonthlyFee' => $this->settings->getBaseMonthlyFee(),
                 'defaultDiscountAmount' => $this->settings->getDefaultDiscountAmount(),
                 'defaultDiscountValidDays' => $this->settings->getDefaultDiscountValidDays(),
-                'discountEnabledGroupIds' => $this->settings->getDiscountEnabledGroupIds(),
+                'personalDiscountCodeLimit' => $this->settings->getPersonalDiscountCodeLimit(),
+                'discountEnabledGroupIds' => $discountEnabledGroupIds,
+                'noticeBarEnabled' => $this->settings->getNoticeBarEnabled(),
+                'noticeBarText' => $this->settings->getNoticeBarText(),
+                'paymentGuideEnabled' => $this->settings->getPaymentGuideEnabled(),
+                'paymentGuideTitle' => $this->settings->getPaymentGuideTitle(),
+                'paymentGuideText' => $this->settings->getPaymentGuideText(),
+                'paymentExtraText' => $this->settings->getPaymentExtraText(),
+                'paymentWechatAccount' => $this->settings->getPaymentWechatAccount(),
+                'paymentWechatQrCodeUrl' => $this->settings->getPaymentWechatQrCodeUrl(),
+                'paymentWechatNote' => $this->settings->getPaymentWechatNote(),
+                'paymentAlipayAccount' => $this->settings->getPaymentAlipayAccount(),
+                'paymentAlipayQrCodeUrl' => $this->settings->getPaymentAlipayQrCodeUrl(),
+                'paymentAlipayNote' => $this->settings->getPaymentAlipayNote(),
+                'paymentUsdtAccount' => $this->settings->getPaymentUsdtAccount(),
+                'paymentUsdtQrCodeUrl' => $this->settings->getPaymentUsdtQrCodeUrl(),
+                'paymentUsdtNote' => $this->settings->getPaymentUsdtNote(),
                 'groups' => Group::query()
+                    ->where('id', '!=', Group::GUEST_ID)
                     ->orderBy('id')
                     ->get(['id', 'name_singular'])
                     ->map(fn (Group $group) => [
                         'id' => $group->id,
-                        'name' => $group->name_singular,
+                        'name' => $this->translateGroupName($group),
                     ])->values(),
             ],
         ]);
+    }
+
+    protected function translateGroupName(Group $group): string
+    {
+        return match ((int) $group->id) {
+            Group::ADMINISTRATOR_ID => '管理员',
+            Group::MEMBER_ID => '普通注册用户',
+            Group::MODERATOR_ID => '版主',
+            default => $group->name_singular,
+        };
     }
 }

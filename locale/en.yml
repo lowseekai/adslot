@@ -1,0 +1,81 @@
+doingfb-adslot:
+  forum:
+    notifications:
+      item_reviewed_approved_text: "Your provider ad has been approved and is now visible."
+      item_reviewed_rejected_text: "Your provider ad was rejected. Please update it and submit again."
+      item_reviewed_pending_text: "{user} updated your provider ad review."
+      excerpt_fallback: "Review status: {status}. Visibility: {visibility}."
+      item_pending_review_text: "A new provider ad is waiting for review."
+      item_pending_review_excerpt: "Applicant: {applicant}"
+      item_renewal_pending_review_text: "A provider ad renewal is waiting for review."
+      item_renewal_pending_review_excerpt: "Applicant: {applicant}. Merchant: {merchant}. Duration: {durationMonths} months. Payable: {payableAmount}"
+      item_renewal_reviewed_text: "Your provider ad renewal review result: {status}."
+      item_renewal_reviewed_excerpt: "Merchant: {merchant}. Duration: {durationMonths} months. Old end: {oldEndsAt}. New end: {newEndsAt}"
+      item_expiring_text: "Your provider ad expires in {days} days. Please renew it in time."
+      item_expiring_excerpt: "Merchant: {merchant}. Ends at: {endsAt}"
+      item_expired_text: "Your provider ad has expired and is no longer visible."
+      item_expired_excerpt: "Merchant: {merchant}. Ended at: {endsAt}"
+      discount_code_used_text: "Your discount code was used for an ad fee deduction."
+      discount_code_used_excerpt: "Code: {code}. Deduction: {amount}. Merchant: {merchant}"
+      unknown_merchant: Unknown merchant
+      unknown_applicant: Unknown user
+      status_approved: Approved
+      status_rejected: Rejected
+      status_pending: Pending
+      visibility_visible: Visible
+      visibility_hidden: Hidden
+    settings:
+      notify_item_reviewed_label: Provider ad review result
+      notify_item_pending_review_label: New provider ad pending review
+      notify_item_renewal_pending_review_label: Provider ad renewal pending review
+      notify_item_renewal_reviewed_label: Provider ad renewal review result
+      notify_item_expiring_label: Provider ad expiring soon
+      notify_item_expired_label: Provider ad expired
+      notify_discount_code_used_label: Discount code used
+  email:
+    common:
+      merchant_label: "Merchant"
+      ends_at_label: "Ends at"
+      month_unit: "month(s)"
+    item_reviewed:
+      subject: "Your provider ad review result has been updated"
+      merchant_label: "Merchant"
+      status_label: "Review status"
+      visibility_label: "Visibility"
+      review_note_label: "Review note"
+      status_approved: Approved
+      status_rejected: Rejected
+      status_pending: Pending
+      visibility_visible: Visible
+      visibility_hidden: Hidden
+      no_review_note: No review note provided.
+    item_pending_review:
+      subject: "A new provider ad is waiting for review"
+      body: "Please open the admin review list to check and process it."
+    item_renewal_pending_review:
+      subject: "A provider ad renewal is waiting for review"
+      applicant_label: "Applicant"
+      duration_label: "Renewal duration"
+      payable_label: "Payable"
+      body: "Please open the admin renewal review list to verify the payment proof and process it."
+    item_renewal_reviewed:
+      subject: "Your provider ad renewal review result has been updated"
+      status_label: "Review status"
+      duration_label: "Renewal duration"
+      old_ends_at_label: "Old ends at"
+      new_ends_at_label: "New ends at"
+      review_note_label: "Review note"
+      status_approved: Approved
+      status_rejected: Rejected
+      no_review_note: No review note provided.
+    item_expiring:
+      subject: "Your provider ad is expiring soon"
+      body: "Your provider ad expires in {days} days. Please renew it in time."
+    item_expired:
+      subject: "Your provider ad has expired"
+      body: "Your provider ad has expired and is no longer visible."
+    discount_code_used:
+      subject: "Your discount code was used"
+      code_label: "Discount code"
+      amount_label: "Deduction amount"
+      body: "Your discount code was used for an ad fee deduction."

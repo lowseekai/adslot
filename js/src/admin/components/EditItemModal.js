@@ -16,6 +16,8 @@ const CONTACT_PLACEHOLDERS = {
   email: '请输入邮箱地址',
 };
 
+const DURATION_OPTIONS = [1, 3, 6, 12];
+
 export default class EditItemModal extends Modal {
   oninit(vnode) {
     super.oninit(vnode);
@@ -31,12 +33,14 @@ export default class EditItemModal extends Modal {
     this.contactValue = Stream(attrs.contactValue || attrs.contact || '');
     this.discountCode = Stream(attrs.discountCode || '');
     this.paymentProofPath = Stream(attrs.paymentProofPath || '');
+    this.durationMonths = Stream(attrs.durationMonths || 1);
     this.adFeeAmount = Stream(attrs.adFeeAmount ?? 0);
     this.discountAmount = Stream(attrs.discountAmount ?? 0);
     this.payableAmount = Stream(attrs.payableAmount ?? 0);
     this.status = Stream(attrs.status || 'pending');
+    this.isPinned = Stream(!!attrs.isPinned);
     this.isVisible = Stream(!!attrs.isVisible);
-    this.sortOrder = Stream(attrs.sortOrder ?? 0);
+    this.sortOrder = Stream(Math.max(1, Number(attrs.sortOrder ?? 1)));
     this.startsAt = Stream(this.normalizeDate(attrs.startsAt));
     this.endsAt = Stream(this.normalizeDate(attrs.endsAt));
     this.error = '';
@@ -102,9 +106,20 @@ export default class EditItemModal extends Modal {
             </div>
           </div>
 
-          <div className="Form-group">
-            <label>优惠码</label>
-            <input className="FormControl" value={this.discountCode()} oninput={withAttr('value', this.discountCode)} />
+          <div className="AdSlotAdminContactGrid">
+            <div className="Form-group">
+              <label>投放时长</label>
+              <select className="FormControl" value={String(this.durationMonths())} onchange={(event) => this.onDurationChange(event)}>
+                {DURATION_OPTIONS.map((months) => (
+                  <option value={String(months)}>{months}个月</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="Form-group">
+              <label>优惠码</label>
+              <input className="FormControl" value={this.discountCode()} oninput={withAttr('value', this.discountCode)} />
+            </div>
           </div>
 
           <div className="Form-group">
@@ -148,6 +163,13 @@ export default class EditItemModal extends Modal {
 
           <div className="Form-group">
             <label className="checkbox">
+              <input type="checkbox" checked={this.isPinned()} onchange={withAttr('checked', this.isPinned)} />
+              缃畾鏄剧ず
+            </label>
+          </div>
+
+          <div className="Form-group">
+            <label className="checkbox">
               <input type="checkbox" checked={this.isVisible()} onchange={withAttr('checked', this.isVisible)} />
               显示在前台
             </label>
@@ -155,7 +177,7 @@ export default class EditItemModal extends Modal {
 
           <div className="Form-group">
             <label>排序值</label>
-            <input className="FormControl" type="number" value={this.sortOrder()} oninput={withAttr('value', this.sortOrder)} />
+            <input className="FormControl" type="number" min="1" value={this.sortOrder()} oninput={withAttr('value', this.sortOrder)} />
             <p className="helpText">数字越小越靠前。</p>
           </div>
 
@@ -192,6 +214,10 @@ export default class EditItemModal extends Modal {
     return CONTACT_PLACEHOLDERS[this.contactType()] || '请输入联系方式';
   }
 
+  onDurationChange(event) {
+    this.durationMonths(Number(event.target.value || 1));
+  }
+
   async onsubmit(event) {
     event.preventDefault();
 
@@ -203,6 +229,10 @@ export default class EditItemModal extends Modal {
     try {
       if (!this.contactValue().trim()) {
         throw new Error('联系方式账号不能为空');
+      }
+
+      if (!DURATION_OPTIONS.includes(Number(this.durationMonths()))) {
+        throw new Error('投放时长无效');
       }
 
       if (this.imageFile) {
@@ -223,12 +253,14 @@ export default class EditItemModal extends Modal {
               contactValue: this.contactValue(),
               discountCode: this.discountCode(),
               paymentProofPath: this.paymentProofPath() || null,
+              durationMonths: Number(this.durationMonths() || 1),
               adFeeAmount: Number(this.adFeeAmount() || 0),
               discountAmount: Number(this.discountAmount() || 0),
               payableAmount: Number(this.payableAmount() || 0),
               status: this.status(),
+              isPinned: this.isPinned(),
               isVisible: this.isVisible(),
-              sortOrder: Number(this.sortOrder() || 0),
+              sortOrder: Math.max(1, Number(this.sortOrder() || 1)),
               startsAt: this.startsAt() || null,
               endsAt: this.endsAt() || null,
             },
@@ -308,7 +340,23 @@ export default class EditItemModal extends Modal {
       return '';
     }
 
-    return String(value).slice(0, 16);
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return String(value).replace(' ', 'T').slice(0, 16);
+    }
+
+    const formatter = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+
+    return formatter.format(date).replace(' ', 'T');
   }
 
   apiUrl() {

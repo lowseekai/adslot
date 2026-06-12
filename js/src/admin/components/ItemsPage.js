@@ -30,6 +30,7 @@ export default class ItemsPage extends ExtensionPage {
       baseMonthlyFee: '',
       defaultDiscountAmount: '',
       defaultDiscountValidDays: '',
+      personalDiscountCodeLimit: '1',
       discountEnabledGroupIds: [],
       groups: [],
     };
@@ -121,6 +122,18 @@ export default class ItemsPage extends ExtensionPage {
                 />
               </label>
 
+              <label className="AdSlotAdminField">
+                <span>每人有效未使用码上限</span>
+                <input
+                  className="FormControl"
+                  type="number"
+                  min="1"
+                  value={this.config.personalDiscountCodeLimit}
+                  oninput={(event) => (this.config.personalDiscountCodeLimit = event.target.value)}
+                  disabled={this.configLoading || this.configSaving}
+                />
+              </label>
+
               <div className="AdSlotAdminToolbar-actions">
                 {Button.component(
                   {
@@ -149,25 +162,6 @@ export default class ItemsPage extends ExtensionPage {
                   </label>
                 ))}
               </div>
-            </div>
-
-            <div className="AdSlotAdminConfigFooter">
-              {Button.component(
-                {
-                  className: 'Button AdSlotAdminGhostButton',
-                  loading: this.codeGenerating,
-                  onclick: () => this.generateAdminCode(),
-                },
-                '后台生成优惠码'
-              )}
-              {this.generatedAdminCode ? (
-                <div className="AdSlotAdminGeneratedCode">
-                  <strong>{this.generatedAdminCode.code}</strong>
-                  <span>
-                    抵扣 {this.formatMoney(this.generatedAdminCode.amount)}，有效期至 {this.formatDate(this.generatedAdminCode.expiresAt)}
-                  </span>
-                </div>
-              ) : null}
             </div>
 
             {this.configError ? <div className="AdSlotAdminPage-error">{this.configError}</div> : null}
@@ -438,6 +432,7 @@ export default class ItemsPage extends ExtensionPage {
         baseMonthlyFee: String(data.baseMonthlyFee ?? ''),
         defaultDiscountAmount: String(data.defaultDiscountAmount ?? ''),
         defaultDiscountValidDays: String(data.defaultDiscountValidDays ?? ''),
+        personalDiscountCodeLimit: String(data.personalDiscountCodeLimit ?? 1),
         discountEnabledGroupIds: data.discountEnabledGroupIds || [],
         groups: data.groups || [],
       };
@@ -465,6 +460,7 @@ export default class ItemsPage extends ExtensionPage {
               baseMonthlyFee: Number(this.config.baseMonthlyFee || 0),
               defaultDiscountAmount: Number(this.config.defaultDiscountAmount || 0),
               defaultDiscountValidDays: Number(this.config.defaultDiscountValidDays || 0),
+              personalDiscountCodeLimit: Number(this.config.personalDiscountCodeLimit || 1),
               discountEnabledGroupIds: this.config.discountEnabledGroupIds,
             },
           },
@@ -504,7 +500,7 @@ export default class ItemsPage extends ExtensionPage {
             attributes: {
               amount: Number(this.config.defaultDiscountAmount || 0),
               validDays: Number(this.config.defaultDiscountValidDays || 0),
-              allowedGroupIds: this.config.discountEnabledGroupIds,
+              quantity: 1,
             },
           },
         },

@@ -2,9 +2,6 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Query\Expression;
-
 return [
     'up' => function (Builder $schema) {
         if (!$schema->hasTable('adslot_items')) {
@@ -18,11 +15,12 @@ return [
         }
 
         if ($schema->hasColumn('adslot_items', 'redeem_code')) {
-            Capsule::table('adslot_items')
+            $schema->getConnection()
+                ->table('adslot_items')
                 ->whereNull('discount_code')
                 ->whereNotNull('redeem_code')
                 ->update([
-                    'discount_code' => new Expression('redeem_code'),
+                    'discount_code' => $schema->getConnection()->raw('redeem_code'),
                 ]);
 
             $schema->table('adslot_items', function (Blueprint $table) {
@@ -42,11 +40,12 @@ return [
         }
 
         if ($schema->hasColumn('adslot_items', 'discount_code')) {
-            Capsule::table('adslot_items')
+            $schema->getConnection()
+                ->table('adslot_items')
                 ->whereNull('redeem_code')
                 ->whereNotNull('discount_code')
                 ->update([
-                    'redeem_code' => new Expression('discount_code'),
+                    'redeem_code' => $schema->getConnection()->raw('discount_code'),
                 ]);
 
             $schema->table('adslot_items', function (Blueprint $table) {

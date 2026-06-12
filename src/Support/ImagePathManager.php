@@ -2,6 +2,8 @@
 
 namespace Doingfb\AdSlot\Support;
 
+use Doingfb\AdSlot\Model\Item;
+
 class ImagePathManager
 {
     public function isManagedPath(?string $path): bool
@@ -24,5 +26,24 @@ class ImagePathManager
         if (is_file($fullPath)) {
             @unlink($fullPath);
         }
+    }
+
+    public function deleteIfManagedAndUnused(?string $path, ?int $exceptItemId = null): void
+    {
+        if (!$this->isManagedPath($path)) {
+            return;
+        }
+
+        $query = Item::query()->where('image_path', $path);
+
+        if ($exceptItemId) {
+            $query->where('id', '!=', $exceptItemId);
+        }
+
+        if ($query->exists()) {
+            return;
+        }
+
+        $this->deleteIfManaged($path);
     }
 }

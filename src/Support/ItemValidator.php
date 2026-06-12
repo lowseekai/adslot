@@ -8,6 +8,7 @@ class ItemValidator
 {
     public const ALLOWED_STATUSES = ['pending', 'approved', 'rejected'];
     public const ALLOWED_CONTACT_TYPES = ['wechat', 'telegram', 'email'];
+    public const ALLOWED_DURATION_MONTHS = [1, 3, 6, 12];
 
     public function validateForCreate(array $input): array
     {
@@ -89,8 +90,12 @@ class ItemValidator
             $data['isVisible'] = (bool) $input['isVisible'];
         }
 
+        if (array_key_exists('isPinned', $input)) {
+            $data['isPinned'] = (bool) $input['isPinned'];
+        }
+
         if (array_key_exists('sortOrder', $input)) {
-            $data['sortOrder'] = (int) $input['sortOrder'];
+            $data['sortOrder'] = max(1, (int) $input['sortOrder']);
         }
 
         $hasStartsAt = array_key_exists('startsAt', $input);
@@ -110,6 +115,10 @@ class ItemValidator
             if ($data['paymentProofPath']) {
                 $this->assertImagePath($data['paymentProofPath']);
             }
+        }
+
+        if (array_key_exists('durationMonths', $input)) {
+            $data['durationMonths'] = $this->normalizeDurationMonths($input['durationMonths']);
         }
 
         foreach (['adFeeAmount', 'discountAmount', 'payableAmount'] as $field) {
@@ -141,6 +150,7 @@ class ItemValidator
             'contactValue' => trim((string) ($input['contactValue'] ?? $legacyContact)),
             'discountCode' => ($input['discountCode'] ?? null) !== null ? trim((string) $input['discountCode']) : null,
             'paymentProofPath' => ($input['paymentProofPath'] ?? null) !== null ? trim((string) $input['paymentProofPath']) : null,
+            'durationMonths' => $this->normalizeDurationMonths($input['durationMonths'] ?? 1),
         ];
     }
 
@@ -191,13 +201,17 @@ class ItemValidator
             return null;
         }
 
-        $timestamp = strtotime((string) $value);
+        try {
+            $date = AdSlotTime::parse($value);
+        } catch (\Throwable) {
+            $date = null;
+        }
 
-        if ($timestamp === false) {
+        if (!$date) {
             throw new ValidationException(['message' => $message]);
         }
 
-        return date('Y-m-d H:i:s', $timestamp);
+        return $date->format('Y-m-d H:i:s');
     }
 
     protected function normalizeMoneyValue(mixed $value, string $message): float
@@ -211,5 +225,30 @@ class ItemValidator
         }
 
         return max(0, round((float) $value, 2));
+    }
+
+    protected function normalizeDurationMonths(mixed $value): int
+    {
+        $duration = (int) $value;
+
+        if (!in_array($duration, self::ALLOWED_DURATION_MONTHS, true)) {
+            throw new ValidationException(['message' => '投放时长无效。']);
+        }
+
+        return $duration;
+    }
+
+    /**
+     * 验证支付凭证是否符合要求
+     *
+     * @param array{payableAmount:float} $pricing
+     * @param string|null $paymentProofPath
+     * @throws ValidationException
+     */
+    public function validatePaymentProof(array $pricing, ?string $paymentProofPath): void
+    {
+        if ($pricing['payableAmount'] > 0 && empty($paymentProofPath)) {
+            throw new ValidationException(['message' => '请上传支付凭证后再提交审核。']);
+        }
     }
 }

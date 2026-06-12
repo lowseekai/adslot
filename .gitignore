@@ -1,3 +1,15 @@
-js/node_modules/
-.DS_Store
-Thumbs.db
+# 临时文件
+tmp-*.js
+tmp_*.js
+tmp-*.php
+tmp_*.php
+tmp-*.png
+tmp_*.png
+tmp-*.html
+tmp_*.html
+
+# 测试脚本（可选，根据需要保留）
+test_fixes.php
+
+# 其他临时文件
+views/

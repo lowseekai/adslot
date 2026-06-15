@@ -2,22 +2,19 @@
 
 namespace Doingfb\AdSlot\Api\Controller;
 
-use Doingfb\AdSlot\Model\Item;
-use Doingfb\AdSlot\Model\ItemRenewal;
+use Doingfb\AdSlot\Model\DiscountCode;
 use Doingfb\AdSlot\Support\DiscountGroupGrantService;
-use Doingfb\AdSlot\Support\ImagePathManager;
 use Flarum\Http\RequestUtil;
-use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class DeleteItemController implements RequestHandlerInterface
+class DeleteDiscountCodeController implements RequestHandlerInterface
 {
     public function __construct(
-        protected ImagePathManager $imagePathManager,
         protected DiscountGroupGrantService $groupGrants
     ) {
     }
@@ -27,19 +24,19 @@ class DeleteItemController implements RequestHandlerInterface
         $actor = RequestUtil::getActor($request);
         $actor->assertAdmin();
 
-        $item = $this->resolveItem($request);
-        $this->groupGrants->revokeActiveForItem($item);
-        $this->imagePathManager->deleteIfManagedAndUnused($item->image_path, $item->id);
-        ItemRenewal::query()->where('item_id', $item->id)->delete();
-        $item->delete();
+        $discountCode = $this->resolveDiscountCode($request);
+        $this->groupGrants->revokeActiveForDiscountCode($discountCode);
+        $discountCode->delete();
 
         return new EmptyResponse(204);
     }
 
-    protected function resolveItem(ServerRequestInterface $request): Item
+    protected function resolveDiscountCode(ServerRequestInterface $request): DiscountCode
     {
         $body = (array) $request->getParsedBody();
+        $query = $request->getQueryParams();
         $id = $request->getAttribute('id')
+            ?? Arr::get($query, 'id')
             ?? Arr::get($body, 'data.id')
             ?? Arr::get($body, 'data.attributes.id')
             ?? Arr::get($body, 'id');
@@ -50,6 +47,6 @@ class DeleteItemController implements RequestHandlerInterface
             throw new ModelNotFoundException();
         }
 
-        return Item::query()->findOrFail($id);
+        return DiscountCode::query()->findOrFail($id);
     }
 }

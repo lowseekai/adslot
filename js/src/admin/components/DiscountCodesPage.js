@@ -19,6 +19,8 @@ export default class DiscountCodesPage extends AdminPage {
     this.loading = true;
     this.configLoading = true;
     this.generating = false;
+    this.actingCodeId = null;
+    this.actingAction = '';
     this.items = [];
     this.error = '';
     this.status = '';
@@ -38,8 +40,10 @@ export default class DiscountCodesPage extends AdminPage {
       quantity: '1',
       usageLimit: '1',
       durationMonths: '0',
+      grantGroupId: '0',
       allowedGroupIds: [],
       groups: [],
+      grantableGroups: [],
     };
 
     this.loadConfig();
@@ -147,6 +151,21 @@ export default class DiscountCodesPage extends AdminPage {
                 </select>
               </label>
 
+              <label className="AdSlotAdminField">
+                <span>授权用户组</span>
+                <select
+                  className="FormControl"
+                  value={this.config.grantGroupId}
+                  onchange={(event) => (this.config.grantGroupId = event.target.value)}
+                  disabled={this.configLoading || this.generating}
+                >
+                  <option value="0">不授权</option>
+                  {(this.config.grantableGroups || []).map((group) => (
+                    <option value={String(group.id)}>{group.name}</option>
+                  ))}
+                </select>
+              </label>
+
               <div className="AdSlotAdminToolbar-actions">
                 {Button.component(
                   {
@@ -190,6 +209,7 @@ export default class DiscountCodesPage extends AdminPage {
                 <select className="FormControl" value={this.status} onchange={(event) => this.onStatusChange(event)}>
                   <option value="">全部</option>
                   <option value="available">可用</option>
+                  <option value="deactivated">已下架</option>
                   <option value="used">已使用</option>
                   <option value="expired">已过期</option>
                 </select>
@@ -266,11 +286,12 @@ export default class DiscountCodesPage extends AdminPage {
               <th>ID</th>
               <th>优惠码</th>
               <th className="AdSlotDiscountCodeTable-statusHead">状态</th>
-              <th>金额 / 适用时长</th>
+              <th>金额 / 时长 / 授权</th>
               <th className="AdSlotDiscountCodeTable-dateHead">有效期</th>
               <th>归属 / 创建</th>
               <th>使用记录</th>
               <th>生成时间</th>
+              <th className="AdSlotDiscountCodeTable-actionsHead">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -278,7 +299,7 @@ export default class DiscountCodesPage extends AdminPage {
               this.items.map((item) => this.renderRow(item))
             ) : (
               <tr>
-                <td colSpan="8" className="AdSlotAdminTable-empty">
+                <td colSpan="9" className="AdSlotAdminTable-empty">
                   当前暂无优惠码
                 </td>
               </tr>
@@ -322,6 +343,7 @@ export default class DiscountCodesPage extends AdminPage {
             <span className={`AdSlotAdminTable-chip${item.durationMonths ? '' : ' AdSlotAdminTable-chip--soft'}`}>
               {this.durationRestrictionLabel(item.durationMonths)}
             </span>
+            {item.grantGroupName ? <span className="AdSlotAdminTable-chip AdSlotAdminTable-chip--accent">授权 {item.grantGroupName}</span> : null}
           </div>
         </td>
         <td className="AdSlotDiscountCodeTable-date">
@@ -345,7 +367,54 @@ export default class DiscountCodesPage extends AdminPage {
           </div>
         </td>
         <td className="AdSlotAdminTable-colTime">{this.formatDate(item.createdAt)}</td>
+        <td className="AdSlotAdminTable-colActions AdSlotDiscountCodeTable-actions">{this.renderCodeActions(item)}</td>
       </tr>
+    );
+  }
+
+  renderCodeActions(item) {
+    const isDeactivating = this.isActing(item, 'deactivate');
+    const isActivating = this.isActing(item, 'activate');
+    const isDeleting = this.isActing(item, 'delete');
+    const isRowActing = isDeactivating || isActivating || isDeleting;
+    const isAvailabilityActing = isDeactivating || isActivating;
+    const canDeactivate = item.status === 'available';
+    const canActivate = item.status === 'deactivated';
+    const availabilityLabel = canActivate ? '上架' : '下架';
+    const availabilityTitle = canActivate ? '上架' : canDeactivate ? '下架' : '仅可上下架可用或已下架优惠码';
+    const availabilityIcon = isAvailabilityActing
+      ? 'fas fa-spinner fa-spin'
+      : canActivate
+        ? 'fas fa-toggle-on'
+        : 'fas fa-toggle-off';
+
+    return (
+      <div className="AdSlotAdminTable-actions">
+        {Button.component(
+          {
+            type: 'button',
+            className: `Button Button--small AdSlotAdminAction AdSlotAdminAction--icon${canActivate ? ' is-success' : ' is-warning'}`,
+            icon: availabilityIcon,
+            title: availabilityTitle,
+            'aria-label': availabilityLabel,
+            disabled: isRowActing || (!canDeactivate && !canActivate),
+            onclick: () => (canActivate ? this.activateCode(item) : this.deactivateCode(item)),
+          },
+          ''
+        )}
+        {Button.component(
+          {
+            type: 'button',
+            className: 'Button Button--small Button--danger AdSlotAdminAction AdSlotAdminAction--icon is-danger',
+            icon: isDeleting ? 'fas fa-spinner fa-spin' : 'fas fa-trash',
+            title: '删除',
+            'aria-label': '删除',
+            disabled: isRowActing,
+            onclick: () => this.deleteCode(item),
+          },
+          ''
+        )}
+      </div>
     );
   }
 
@@ -380,8 +449,10 @@ export default class DiscountCodesPage extends AdminPage {
         quantity: '1',
         usageLimit: '1',
         durationMonths: '0',
+        grantGroupId: '0',
         allowedGroupIds: data.discountEnabledGroupIds || [],
         groups: data.groups || [],
+        grantableGroups: data.grantableGroups || [],
       };
     } catch (error) {
       this.showAlert('error', error.message || '配置加载失败');
@@ -435,6 +506,7 @@ export default class DiscountCodesPage extends AdminPage {
               quantity: Number(this.config.quantity || 1),
               usageLimit: Number(this.config.usageLimit || 1),
               durationMonths: Number(this.config.durationMonths || 0) || null,
+              grantGroupId: Number(this.config.grantGroupId || 0) || null,
             },
           },
         },
@@ -450,6 +522,93 @@ export default class DiscountCodesPage extends AdminPage {
     }
 
     this.generating = false;
+    m.redraw();
+  }
+
+  isActing(item, action) {
+    return Number(this.actingCodeId) === Number(item?.id) && this.actingAction === action;
+  }
+
+  async deactivateCode(item) {
+    if (!item || item.status !== 'available') {
+      return;
+    }
+
+    if (!confirm(`确认下架优惠码 ${item.code} 吗？下架后前台将不能再使用。`)) {
+      return;
+    }
+
+    await this.runCodeAction(
+      item,
+      'deactivate',
+      `/adslot/admin/discount-codes/${item.id}/deactivate`,
+      '优惠码已下架。',
+      '优惠码下架失败。'
+    );
+  }
+
+  async activateCode(item) {
+    if (!item || item.status !== 'deactivated') {
+      return;
+    }
+
+    if (!confirm(`确认上架优惠码 ${item.code} 吗？上架后前台可以继续在有效期内使用。`)) {
+      return;
+    }
+
+    await this.runCodeAction(
+      item,
+      'activate',
+      `/adslot/admin/discount-codes/${item.id}/activate`,
+      '优惠码已上架。',
+      '优惠码上架失败。'
+    );
+  }
+
+  async deleteCode(item) {
+    if (!item) {
+      return;
+    }
+
+    if (!confirm(`确认删除优惠码 ${item.code} 吗？删除后列表将不再显示该记录。`)) {
+      return;
+    }
+
+    await this.runCodeAction(
+      item,
+      'delete',
+      `/adslot/admin/discount-codes/${item.id}/delete`,
+      '优惠码已删除。',
+      '优惠码删除失败。',
+      true
+    );
+  }
+
+  async runCodeAction(item, action, path, successMessage, failureMessage, removeFromList = false) {
+    this.actingCodeId = item.id;
+    this.actingAction = action;
+    m.redraw();
+
+    try {
+      await app.request({
+        method: 'POST',
+        url: `${this.apiUrl()}${path}`,
+        body: { data: { id: item.id } },
+      });
+
+      this.showAlert('success', successMessage);
+
+      if (removeFromList && this.items.length <= 1 && this.page > 1) {
+        this.page -= 1;
+      }
+
+      await this.loadItems();
+    } catch (error) {
+      this.showAlert('error', error.message || failureMessage);
+    }
+
+    this.actingCodeId = null;
+    this.actingAction = '';
     m.redraw();
   }
 
@@ -472,6 +631,7 @@ export default class DiscountCodesPage extends AdminPage {
   renderCodeStatus(status) {
     const labelMap = {
       available: '可用',
+      deactivated: '已下架',
       used: '已使用',
       expired: '已过期',
     };

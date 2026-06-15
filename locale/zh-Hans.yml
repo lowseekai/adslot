@@ -5,6 +5,8 @@ doingfb-adslot:
       item_reviewed_rejected_text: "你的商家广告未通过审核，请修改资料后重新提交。"
       item_reviewed_pending_text: "{user} 更新了你的商家广告审核状态。"
       excerpt_fallback: "审核状态：{status}；展示状态：{visibility}。"
+      excerpt_fallback_with_grant: "审核状态：{status}；展示状态：{visibility}；已授权：{grantGroup}。"
+      review_note_with_grant: "{reviewNote}；已授权：{grantGroup}"
       item_pending_review_text: "有新的商家广告申请待审核。"
       item_pending_review_excerpt: "申请人：{applicant}"
       item_renewal_pending_review_text: "有新的广告续费申请待审核。"
@@ -34,6 +36,7 @@ doingfb-adslot:
       notify_discount_code_used_label: "优惠码已被使用"
   email:
     common:
+      greeting: "你好，{username}！"
       merchant_label: "商家"
       ends_at_label: "到期时间"
       month_unit: "个月"

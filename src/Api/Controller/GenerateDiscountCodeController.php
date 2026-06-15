@@ -30,13 +30,15 @@ class GenerateDiscountCodeController implements RequestHandlerInterface
             $quantity = isset($attributes['quantity']) ? (int) $attributes['quantity'] : 1;
             $usageLimit = isset($attributes['usageLimit']) ? (int) $attributes['usageLimit'] : 1;
             $durationMonths = isset($attributes['durationMonths']) ? (int) $attributes['durationMonths'] : null;
+            $grantGroupId = isset($attributes['grantGroupId']) ? (int) $attributes['grantGroupId'] : null;
             $codes = $this->discountCodes->generateBatchForAdmin(
                 $actor,
                 isset($attributes['amount']) ? (float) $attributes['amount'] : null,
                 isset($attributes['validDays']) ? (int) $attributes['validDays'] : null,
                 $quantity,
                 $usageLimit,
-                $durationMonths
+                $durationMonths,
+                $grantGroupId
             );
 
             return new JsonResponse([
@@ -67,6 +69,7 @@ class GenerateDiscountCodeController implements RequestHandlerInterface
             'durationMonths' => $code->duration_months ? (int) $code->duration_months : null,
             'durationLabel' => $this->discountCodes->durationRestrictionLabel($code->duration_months ? (int) $code->duration_months : null),
             'allowedGroupIds' => $code->allowed_group_ids ?? [],
+            'grantGroupId' => $code->grant_group_id ? (int) $code->grant_group_id : null,
         ];
     }
 }

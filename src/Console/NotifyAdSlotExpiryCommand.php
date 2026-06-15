@@ -5,12 +5,14 @@ namespace Doingfb\AdSlot\Console;
 use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Support\AdSlotTime;
 use Doingfb\AdSlot\Support\BusinessNotifier;
+use Doingfb\AdSlot\Support\DiscountGroupGrantService;
 use Flarum\Console\AbstractCommand;
 
 class NotifyAdSlotExpiryCommand extends AbstractCommand
 {
     public function __construct(
-        protected BusinessNotifier $notifier
+        protected BusinessNotifier $notifier,
+        protected DiscountGroupGrantService $groupGrants
     ) {
         parent::__construct();
     }
@@ -28,6 +30,7 @@ class NotifyAdSlotExpiryCommand extends AbstractCommand
         $warningDeadline = $now->copy()->addDays(3);
         $expiringCount = 0;
         $expiredCount = 0;
+        $revokedGrantCount = 0;
 
         Item::query()
             ->with('user')
@@ -64,6 +67,8 @@ class NotifyAdSlotExpiryCommand extends AbstractCommand
                 }
             });
 
-        $this->info("AdSlot expiry notifications sent. expiring={$expiringCount}, expired={$expiredCount}");
+        $revokedGrantCount = $this->groupGrants->revokeExpired($now);
+
+        $this->info("AdSlot expiry notifications sent. expiring={$expiringCount}, expired={$expiredCount}, revokedGroupGrants={$revokedGrantCount}");
     }
 }

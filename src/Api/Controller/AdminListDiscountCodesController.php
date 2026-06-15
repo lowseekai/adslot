@@ -5,6 +5,7 @@ namespace Doingfb\AdSlot\Api\Controller;
 use Doingfb\AdSlot\Model\DiscountCode;
 use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Support\AdSlotTime;
+use Flarum\Group\Group;
 use Flarum\Http\RequestUtil;
 use Flarum\User\User;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -41,13 +42,19 @@ class AdminListDiscountCodesController implements RequestHandlerInterface
         } elseif ($status === 'available') {
             $query->where('is_used', false)
                 ->whereColumn('used_count', '<', 'usage_limit')
+                ->whereNull('deactivated_at')
                 ->where(function ($query) use ($now) {
                     $query->whereNull('expires_at')
                         ->orWhere('expires_at', '>', $now);
                 });
+        } elseif ($status === 'deactivated') {
+            $query->where('is_used', false)
+                ->whereColumn('used_count', '<', 'usage_limit')
+                ->whereNotNull('deactivated_at');
         } elseif ($status === 'expired') {
             $query->where('is_used', false)
                 ->whereColumn('used_count', '<', 'usage_limit')
+                ->whereNull('deactivated_at')
                 ->whereNotNull('expires_at')
                 ->where('expires_at', '<=', $now);
         }
@@ -56,9 +63,10 @@ class AdminListDiscountCodesController implements RequestHandlerInterface
         $codes = $query->offset($offset)->limit($limit)->get();
         $users = $this->loadUsers($codes);
         $items = $this->loadItems($codes);
+        $groups = $this->loadGroups($codes);
 
         return new JsonResponse([
-            'data' => $codes->map(fn (DiscountCode $code) => $this->serializeCode($code, $users, $items))->values(),
+            'data' => $codes->map(fn (DiscountCode $code) => $this->serializeCode($code, $users, $items, $groups))->values(),
             'meta' => [
                 'total' => $total,
                 'limit' => $limit,
@@ -113,13 +121,34 @@ class AdminListDiscountCodesController implements RequestHandlerInterface
             ->all();
     }
 
-    protected function serializeCode(DiscountCode $code, array $users, array $items): array
+    protected function loadGroups($codes): array
+    {
+        $ids = $codes
+            ->pluck('grant_group_id')
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        return Group::query()
+            ->whereIn('id', $ids)
+            ->get(['id', 'name_singular'])
+            ->keyBy('id')
+            ->all();
+    }
+
+    protected function serializeCode(DiscountCode $code, array $users, array $items, array $groups): array
     {
         $usageLimit = max(1, (int) ($code->usage_limit ?? 1));
         $usedCount = max(0, (int) ($code->used_count ?? ((bool) $code->is_used ? 1 : 0)));
         $isFullyUsed = $usedCount >= $usageLimit;
-        $isExpired = !$isFullyUsed && $code->expires_at && $code->expires_at->lessThanOrEqualTo(AdSlotTime::now());
-        $status = $isFullyUsed ? 'used' : ($isExpired ? 'expired' : 'available');
+        $isDeactivated = !$isFullyUsed && (bool) $code->deactivated_at;
+        $isExpired = !$isFullyUsed && !$isDeactivated && $code->expires_at && $code->expires_at->lessThanOrEqualTo(AdSlotTime::now());
+        $status = $isFullyUsed ? 'used' : ($isDeactivated ? 'deactivated' : ($isExpired ? 'expired' : 'available'));
 
         return [
             'id' => $code->id,
@@ -127,17 +156,21 @@ class AdminListDiscountCodesController implements RequestHandlerInterface
             'amount' => (float) $code->amount,
             'startsAt' => AdSlotTime::atom($code->starts_at),
             'expiresAt' => AdSlotTime::atom($code->expires_at),
+            'deactivatedAt' => AdSlotTime::atom($code->deactivated_at),
             'validDays' => AdSlotTime::displayDiffInDays($code->starts_at, $code->expires_at),
             'createdAt' => AdSlotTime::atom($code->created_at),
             'usedAt' => AdSlotTime::atom($code->used_at),
             'isUsed' => $isFullyUsed,
             'isExpired' => (bool) $isExpired,
+            'isDeactivated' => (bool) $isDeactivated,
             'status' => $status,
             'usageLimit' => $usageLimit,
             'usedCount' => $usedCount,
             'durationMonths' => $code->duration_months ? (int) $code->duration_months : null,
             'durationLabel' => $this->durationRestrictionLabel($code->duration_months ? (int) $code->duration_months : null),
             'allowedGroupIds' => $code->allowed_group_ids ?? [],
+            'grantGroupId' => $code->grant_group_id ? (int) $code->grant_group_id : null,
+            'grantGroupName' => $this->serializeGroupName($groups[(int) $code->grant_group_id] ?? null),
             'createdBy' => $this->serializeUser($users[(int) $code->created_by] ?? null),
             'ownerUser' => $this->serializeUser($users[(int) $code->owner_user_id] ?? null),
             'usedBy' => $this->serializeUser($users[(int) $code->used_by] ?? null),
@@ -161,6 +194,20 @@ class AdminListDiscountCodesController implements RequestHandlerInterface
     protected function durationRestrictionLabel(?int $durationMonths): string
     {
         return $durationMonths ? sprintf('%d 个月', $durationMonths) : '不限投放时长';
+    }
+
+    protected function serializeGroupName(?Group $group): ?string
+    {
+        if (!$group) {
+            return null;
+        }
+
+        return match ((int) $group->id) {
+            Group::ADMINISTRATOR_ID => '管理员',
+            Group::MEMBER_ID => '普通注册用户',
+            Group::MODERATOR_ID => '版主',
+            default => $group->name_singular,
+        };
     }
 
     protected function serializeItem(?Item $item): ?array

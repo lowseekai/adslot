@@ -6,10 +6,18 @@ use Doingfb\AdSlot\Model\DiscountCode;
 use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Model\ItemRenewal;
 use Flarum\Foundation\ValidationException;
+use Flarum\Group\Group;
 use Flarum\User\User;
 
 class DiscountCodeService
 {
+    protected const FORBIDDEN_GRANT_GROUP_IDS = [
+        Group::GUEST_ID,
+        Group::ADMINISTRATOR_ID,
+        Group::MEMBER_ID,
+        Group::MODERATOR_ID,
+    ];
+
     public function __construct(
         protected AdSlotSettings $settings
     ) {
@@ -47,15 +55,15 @@ class DiscountCodeService
         );
     }
 
-    public function generateForAdmin(User $actor, ?float $amount = null, ?int $validDays = null, int $usageLimit = 1, ?int $durationMonths = null): DiscountCode
+    public function generateForAdmin(User $actor, ?float $amount = null, ?int $validDays = null, int $usageLimit = 1, ?int $durationMonths = null, ?int $grantGroupId = null): DiscountCode
     {
-        return $this->generateBatchForAdmin($actor, $amount, $validDays, 1, $usageLimit, $durationMonths)[0];
+        return $this->generateBatchForAdmin($actor, $amount, $validDays, 1, $usageLimit, $durationMonths, $grantGroupId)[0];
     }
 
     /**
      * @return DiscountCode[]
      */
-    public function generateBatchForAdmin(User $actor, ?float $amount = null, ?int $validDays = null, int $quantity = 1, int $usageLimit = 1, ?int $durationMonths = null): array
+    public function generateBatchForAdmin(User $actor, ?float $amount = null, ?int $validDays = null, int $quantity = 1, int $usageLimit = 1, ?int $durationMonths = null, ?int $grantGroupId = null): array
     {
         if (!$actor->isAdmin()) {
             throw new ValidationException(['message' => '只有管理员可以手动生成优惠码。']);
@@ -64,12 +72,13 @@ class DiscountCodeService
         $quantity = min(100, max(1, $quantity));
         $usageLimit = min(1000, max(1, $usageLimit));
         $durationMonths = $this->normalizeDurationRestriction($durationMonths);
+        $grantGroupId = $this->normalizeGrantGroupId($grantGroupId);
         $amount = $amount ?? $this->settings->getDefaultDiscountAmount();
         $validDays = $validDays ?? $this->settings->getDefaultDiscountValidDays();
         $codes = [];
 
         // 使用事务确保批量生成的原子性，失败时全部回滚
-        DiscountCode::query()->getConnection()->transaction(function () use ($actor, $amount, $validDays, $quantity, $usageLimit, $durationMonths, &$codes) {
+        DiscountCode::query()->getConnection()->transaction(function () use ($actor, $amount, $validDays, $quantity, $usageLimit, $durationMonths, $grantGroupId, &$codes) {
             for ($i = 0; $i < $quantity; $i++) {
                 $codes[] = $this->createCode(
                     $actor->id,
@@ -80,7 +89,8 @@ class DiscountCodeService
                     null,
                     'alnum',
                     $usageLimit,
-                    $durationMonths
+                    $durationMonths,
+                    $grantGroupId
                 );
             }
         });
@@ -194,6 +204,10 @@ class DiscountCodeService
             throw new ValidationException(['message' => '优惠码尚未生效。']);
         }
 
+        if ($discountCode->deactivated_at && !$alreadyBoundToItem && !$sameLastUsedItem) {
+            throw new ValidationException(['message' => '优惠码已下架。']);
+        }
+
         // 使用 lessThan 而非 lessThanOrEqualTo，给予1秒宽限期，避免边界情况下的不一致体验
         if ($discountCode->expires_at && $discountCode->expires_at->lessThan($now)) {
             throw new ValidationException(['message' => '优惠码已过期。']);
@@ -248,6 +262,18 @@ class DiscountCodeService
         }
     }
 
+    public function deactivate(DiscountCode $discountCode): void
+    {
+        $discountCode->deactivated_at = AdSlotTime::now();
+        $discountCode->save();
+    }
+
+    public function activate(DiscountCode $discountCode): void
+    {
+        $discountCode->deactivated_at = null;
+        $discountCode->save();
+    }
+
     protected function canActorUseCode(User $actor, DiscountCode $discountCode): bool
     {
         if ($actor->isAdmin()) {
@@ -278,7 +304,7 @@ class DiscountCodeService
     /**
      * @param int[]|null $allowedGroupIds
      */
-    protected function createCode(int $createdBy, float $amount, int $validDays, ?array $allowedGroupIds, ?int $ownerUserId, string $format = 'numeric', int $usageLimit = 1, ?int $durationMonths = null): DiscountCode
+    protected function createCode(int $createdBy, float $amount, int $validDays, ?array $allowedGroupIds, ?int $ownerUserId, string $format = 'numeric', int $usageLimit = 1, ?int $durationMonths = null, ?int $grantGroupId = null): DiscountCode
     {
         $startsAt = AdSlotTime::now();
         $expiresAt = (clone $startsAt)->addDays(max(1, $validDays));
@@ -297,6 +323,7 @@ class DiscountCodeService
         $model->usage_limit = min(1000, max(1, $usageLimit));
         $model->used_count = 0;
         $model->duration_months = $durationMonths;
+        $model->grant_group_id = $grantGroupId;
         $model->is_used = false;
         $model->save();
 
@@ -347,6 +374,10 @@ class DiscountCodeService
             return '优惠码尚未生效。';
         }
 
+        if ($discountCode->deactivated_at && !$alreadyBoundToItem && !$sameLastUsedItem) {
+            return '优惠码已下架。';
+        }
+
         // 使用 lessThan 而非 lessThanOrEqualTo，给予1秒宽限期
         if ($discountCode->expires_at && $discountCode->expires_at->lessThan($now)) {
             return '优惠码已过期。';
@@ -383,6 +414,21 @@ class DiscountCodeService
         $durationMonths = (int) ($durationMonths ?? 0);
 
         return in_array($durationMonths, ItemValidator::ALLOWED_DURATION_MONTHS, true) ? $durationMonths : null;
+    }
+
+    protected function normalizeGrantGroupId(?int $groupId): ?int
+    {
+        $groupId = (int) ($groupId ?? 0);
+
+        if ($groupId <= 0) {
+            return null;
+        }
+
+        if (in_array($groupId, self::FORBIDDEN_GRANT_GROUP_IDS, true) || !Group::query()->where('id', $groupId)->exists()) {
+            throw new ValidationException(['message' => '授权用户组无效，请选择自定义会员用户组。']);
+        }
+
+        return $groupId;
     }
 
     protected function restrictedDurationMonths(DiscountCode $discountCode): ?int
@@ -496,6 +542,7 @@ class DiscountCodeService
         return DiscountCode::query()
             ->where('owner_user_id', $actor->id)
             ->where('is_used', false)
+            ->whereNull('deactivated_at')
             ->where(function ($query) use ($now) {
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', $now);

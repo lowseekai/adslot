@@ -7,6 +7,7 @@ use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Serializer\ItemRenewalSerializer;
 use Doingfb\AdSlot\Support\AdSlotTime;
 use Doingfb\AdSlot\Support\BusinessNotifier;
+use Doingfb\AdSlot\Support\DiscountGroupGrantService;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\RequestUtil;
@@ -20,7 +21,8 @@ class ReviewItemRenewalController extends AbstractShowController
     public $serializer = ItemRenewalSerializer::class;
 
     public function __construct(
-        protected BusinessNotifier $notifier
+        protected BusinessNotifier $notifier,
+        protected DiscountGroupGrantService $groupGrants
     ) {
     }
 
@@ -78,6 +80,11 @@ class ReviewItemRenewalController extends AbstractShowController
         }
 
         $renewal->save();
+
+        if ($status === 'approved') {
+            $this->groupGrants->grantForApprovedRenewal($renewal);
+        }
+
         $this->notifier->notifyRenewalReviewed($renewal, $actor);
 
         return $renewal->load(['item', 'user']);

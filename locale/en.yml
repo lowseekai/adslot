@@ -5,6 +5,8 @@ doingfb-adslot:
       item_reviewed_rejected_text: "Your provider ad was rejected. Please update it and submit again."
       item_reviewed_pending_text: "{user} updated your provider ad review."
       excerpt_fallback: "Review status: {status}. Visibility: {visibility}."
+      excerpt_fallback_with_grant: "Review status: {status}. Visibility: {visibility}. Granted: {grantGroup}."
+      review_note_with_grant: "{reviewNote} Granted: {grantGroup}."
       item_pending_review_text: "A new provider ad is waiting for review."
       item_pending_review_excerpt: "Applicant: {applicant}"
       item_renewal_pending_review_text: "A provider ad renewal is waiting for review."
@@ -34,6 +36,7 @@ doingfb-adslot:
       notify_discount_code_used_label: Discount code used
   email:
     common:
+      greeting: "Hello, {username}!"
       merchant_label: "Merchant"
       ends_at_label: "Ends at"
       month_unit: "month(s)"

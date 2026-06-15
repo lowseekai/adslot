@@ -5,8 +5,11 @@ namespace Doingfb\AdSlot;
 use Doingfb\AdSlot\Api\Controller\AdminListItemsController;
 use Doingfb\AdSlot\Api\Controller\AdminListItemRenewalsController;
 use Doingfb\AdSlot\Api\Controller\AdminListDiscountCodesController;
+use Doingfb\AdSlot\Api\Controller\ActivateDiscountCodeController;
 use Doingfb\AdSlot\Api\Controller\CreateItemController;
 use Doingfb\AdSlot\Api\Controller\CreateItemRenewalController;
+use Doingfb\AdSlot\Api\Controller\DeactivateDiscountCodeController;
+use Doingfb\AdSlot\Api\Controller\DeleteDiscountCodeController;
 use Doingfb\AdSlot\Api\Controller\DeleteItemController;
 use Doingfb\AdSlot\Api\Controller\DeleteUploadedImageController;
 use Doingfb\AdSlot\Api\Controller\GenerateDiscountCodeController;
@@ -73,6 +76,13 @@ return [
         ->get('/adslot/admin/items', 'adslot.admin.items', AdminListItemsController::class)
         ->get('/adslot/admin/renewals', 'adslot.admin.renewals', AdminListItemRenewalsController::class)
         ->get('/adslot/admin/discount-codes', 'adslot.admin.discount-codes', AdminListDiscountCodesController::class)
+        ->post('/adslot/admin/discount-codes/{id}/deactivate', 'adslot.admin.discount-codes.deactivate', DeactivateDiscountCodeController::class)
+        ->post('/adslot/admin/discount-codes/deactivate', 'adslot.admin.discount-codes.deactivate.body', DeactivateDiscountCodeController::class)
+        ->post('/adslot/admin/discount-codes/{id}/activate', 'adslot.admin.discount-codes.activate', ActivateDiscountCodeController::class)
+        ->post('/adslot/admin/discount-codes/activate', 'adslot.admin.discount-codes.activate.body', ActivateDiscountCodeController::class)
+        ->delete('/adslot/admin/discount-codes/{id}', 'adslot.admin.discount-codes.delete', DeleteDiscountCodeController::class)
+        ->post('/adslot/admin/discount-codes/{id}/delete', 'adslot.admin.discount-codes.delete.post', DeleteDiscountCodeController::class)
+        ->post('/adslot/admin/discount-codes/delete', 'adslot.admin.discount-codes.delete.body', DeleteDiscountCodeController::class)
         ->get('/adslot/admin/config', 'adslot.admin.config', GetAdminConfigController::class)
         ->post('/adslot/admin/config', 'adslot.admin.config.save', SaveAdminConfigController::class)
         ->post('/adslot/admin/renewals/{id}/review', 'adslot.admin.renewals.review', ReviewItemRenewalController::class)

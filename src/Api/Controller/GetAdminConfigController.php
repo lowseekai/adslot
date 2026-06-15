@@ -12,6 +12,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GetAdminConfigController implements RequestHandlerInterface
 {
+    protected const FORBIDDEN_GRANT_GROUP_IDS = [
+        Group::GUEST_ID,
+        Group::ADMINISTRATOR_ID,
+        Group::MEMBER_ID,
+        Group::MODERATOR_ID,
+    ];
+
     public function __construct(
         protected AdSlotSettings $settings
     ) {
@@ -50,6 +57,14 @@ class GetAdminConfigController implements RequestHandlerInterface
                 'paymentUsdtNote' => $this->settings->getPaymentUsdtNote(),
                 'groups' => Group::query()
                     ->where('id', '!=', Group::GUEST_ID)
+                    ->orderBy('id')
+                    ->get(['id', 'name_singular'])
+                    ->map(fn (Group $group) => [
+                        'id' => $group->id,
+                        'name' => $this->translateGroupName($group),
+                    ])->values(),
+                'grantableGroups' => Group::query()
+                    ->whereNotIn('id', self::FORBIDDEN_GRANT_GROUP_IDS)
                     ->orderBy('id')
                     ->get(['id', 'name_singular'])
                     ->map(fn (Group $group) => [

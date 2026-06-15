@@ -6,6 +6,7 @@ use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Notification\ItemReviewedBlueprint;
 use Doingfb\AdSlot\Serializer\ItemSerializer;
 use Doingfb\AdSlot\Support\AdSlotTime;
+use Doingfb\AdSlot\Support\DiscountGroupGrantService;
 use Doingfb\AdSlot\Support\ImagePathManager;
 use Doingfb\AdSlot\Support\ItemValidator;
 use Flarum\Api\Controller\AbstractShowController;
@@ -23,6 +24,7 @@ class UpdateAdminItemController extends AbstractShowController
     public function __construct(
         protected ItemValidator $validator,
         protected ImagePathManager $imagePathManager,
+        protected DiscountGroupGrantService $groupGrants,
         protected NotificationSyncer $notifications
     ) {
     }
@@ -135,6 +137,14 @@ class UpdateAdminItemController extends AbstractShowController
         $item->reviewed_by = $actor->id;
         $item->save();
 
+        $grantedGroup = null;
+
+        if ((string) $item->status === 'approved') {
+            $grantedGroup = $this->groupGrants->grantForApprovedItem($item);
+        } elseif ($previousStatus === 'approved') {
+            $this->groupGrants->revokeActiveForItem($item);
+        }
+
         if (array_key_exists('imagePath', $input) && $previousImagePath !== $item->image_path) {
             $this->imagePathManager->deleteIfManagedAndUnused($previousImagePath, $item->id);
         }
@@ -146,13 +156,20 @@ class UpdateAdminItemController extends AbstractShowController
             && in_array((string) $item->status, ['approved', 'rejected'], true);
 
         if ($reviewChanged && $shouldNotifyReviewResult && $item->user && (int) $item->user->id !== (int) $actor->id) {
+            $payload = [
+                'merchantName' => (string) $item->merchant_name,
+                'status' => (string) $item->status,
+                'isVisible' => (bool) $item->is_visible,
+                'reviewNote' => (string) ($item->review_note ?? ''),
+            ];
+
+            if ($grantedGroup) {
+                $payload['grantGroupId'] = (int) $grantedGroup->id;
+                $payload['grantGroupName'] = (string) $grantedGroup->name_singular;
+            }
+
             $this->notifications->sync(
-                new ItemReviewedBlueprint($item, $actor, [
-                    'merchantName' => (string) $item->merchant_name,
-                    'status' => (string) $item->status,
-                    'isVisible' => (bool) $item->is_visible,
-                    'reviewNote' => (string) ($item->review_note ?? ''),
-                ]),
+                new ItemReviewedBlueprint($item, $actor, $payload),
                 [$item->user]
             );
         }

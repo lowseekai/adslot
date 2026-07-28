@@ -1,7 +1,7 @@
 {
   "name": "@doingfb/adslot",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "prettier": "@flarum/prettier-config",
   "dependencies": {
     "@flarum/prettier-config": "^1.0.0",

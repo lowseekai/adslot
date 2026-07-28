@@ -39,14 +39,14 @@ export default class ApplyPage extends Page {
         <div className="container">
           <div className="AdSlotApplyPageState">
             {this.redirecting ? <LoadingIndicator display="block" /> : null}
-            <p>姝ｅ湪鎵撳紑鐢宠寮圭獥...</p>
+            <p>正在打开申请弹窗...</p>
             {Button.component(
               {
                 className: 'Button',
                 onclick: () => this.redirectAndOpen(),
                 disabled: this.redirecting,
               },
-              '绔嬪嵆鎵撳紑鐢宠寮圭獥'
+              '立即打开申请弹窗'
             )}
           </div>
         </div>

@@ -267,7 +267,7 @@ export default class ProvidersPage extends Page {
   formatDuration(value) {
     const months = Number(value || 0);
 
-    return months > 0 ? `${months} 涓湀` : '';
+    return months > 0 ? `${months} 个月` : '';
   }
 
   contactTypeLabel(value) {
@@ -276,9 +276,9 @@ export default class ProvidersPage extends Page {
     }
 
     if (value === 'email') {
-      return '閭';
+      return '邮箱';
     }
 
-    return '寰俊';
+    return '微信';
   }
 }

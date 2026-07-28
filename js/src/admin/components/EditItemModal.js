@@ -164,7 +164,7 @@ export default class EditItemModal extends Modal {
           <div className="Form-group">
             <label className="checkbox">
               <input type="checkbox" checked={this.isPinned()} onchange={withAttr('checked', this.isPinned)} />
-              缃畾鏄剧ず
+              置顶显示
             </label>
           </div>
 

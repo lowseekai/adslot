@@ -27,7 +27,6 @@ use Doingfb\AdSlot\Notification\ItemPendingReviewBlueprint;
 use Doingfb\AdSlot\Notification\ItemRenewalPendingReviewBlueprint;
 use Doingfb\AdSlot\Notification\ItemRenewalReviewedBlueprint;
 use Doingfb\AdSlot\Notification\ItemReviewedBlueprint;
-use Doingfb\AdSlot\Serializer\ItemSerializer;
 use Doingfb\AdSlot\Support\AdSlotSettings;
 use Flarum\Extend;
 use Illuminate\Console\Scheduling\Event;
@@ -73,12 +72,12 @@ return [
         ->post('/adslot/admin/items/delete', 'adslot.admin.items.delete.body', DeleteItemController::class),
 
     (new Extend\Notification())
-        ->type(ItemReviewedBlueprint::class, ItemSerializer::class, ['alert', 'email'])
-        ->type(ItemPendingReviewBlueprint::class, ItemSerializer::class, ['alert', 'email'])
-        ->type(ItemRenewalPendingReviewBlueprint::class, ItemSerializer::class, ['alert', 'email'])
-        ->type(ItemRenewalReviewedBlueprint::class, ItemSerializer::class, ['alert', 'email'])
-        ->type(ItemExpiringBlueprint::class, ItemSerializer::class, ['alert', 'email'])
-        ->type(ItemExpiredBlueprint::class, ItemSerializer::class, ['alert', 'email']),
+        ->type(ItemReviewedBlueprint::class, ['alert', 'email'])
+        ->type(ItemPendingReviewBlueprint::class, ['alert', 'email'])
+        ->type(ItemRenewalPendingReviewBlueprint::class, ['alert', 'email'])
+        ->type(ItemRenewalReviewedBlueprint::class, ['alert', 'email'])
+        ->type(ItemExpiringBlueprint::class, ['alert', 'email'])
+        ->type(ItemExpiredBlueprint::class, ['alert', 'email']),
     (new Extend\Console())
         ->command(NotifyAdSlotExpiryCommand::class)
         ->schedule(NotifyAdSlotExpiryCommand::class, function (Event $event) {
@@ -86,4 +85,5 @@ return [
         }),
 
 ];
+
 

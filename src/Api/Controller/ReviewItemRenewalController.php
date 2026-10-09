@@ -8,6 +8,7 @@ use Doingfb\AdSlot\Serializer\ItemRenewalSerializer;
 use Doingfb\AdSlot\Support\AdSlotTime;
 use Doingfb\AdSlot\Support\BusinessNotifier;
 use Doingfb\AdSlot\Support\DiscountGroupGrantService;
+use Doingfb\AdSlot\Support\PointReservationService;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\RequestUtil;
@@ -22,7 +23,8 @@ class ReviewItemRenewalController extends AbstractShowController
 
     public function __construct(
         protected BusinessNotifier $notifier,
-        protected DiscountGroupGrantService $groupGrants
+        protected DiscountGroupGrantService $groupGrants,
+        protected PointReservationService $pointReservations
     ) {
     }
 
@@ -47,6 +49,10 @@ class ReviewItemRenewalController extends AbstractShowController
         $renewal->review_note = ($attributes['reviewNote'] ?? null) !== null ? trim((string) $attributes['reviewNote']) : null;
         $renewal->reviewed_by = $actor->id;
         $renewal->reviewed_at = AdSlotTime::now();
+
+        if ($status === 'rejected') {
+            $this->pointReservations->refundRenewal($renewal);
+        }
 
         if ($status === 'approved') {
             $item = $renewal->item;

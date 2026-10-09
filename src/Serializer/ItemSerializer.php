@@ -30,6 +30,7 @@ class ItemSerializer extends AbstractSerializer
             'adFeeAmount' => (float) $item->ad_fee_amount,
             'discountAmount' => (float) $item->discount_amount,
             'payableAmount' => (float) $item->payable_amount,
+            'pointsCharged' => $item->point_transaction_id !== null && $item->points_refunded_at === null,
             'status' => $item->status,
             'isPinned' => (bool) $item->is_pinned,
             'isVisible' => $item->is_visible,

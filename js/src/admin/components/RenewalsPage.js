@@ -169,7 +169,7 @@ export default class RenewalsPage extends AdminPage {
               this.items.map((item) => this.renderRow(item))
             ) : (
               <tr>
-                <td colSpan="10" className="AdSlotAdminTable-empty">
+                <td colSpan="9" className="AdSlotAdminTable-empty">
                   当前暂无续费申请
                 </td>
               </tr>
@@ -203,13 +203,8 @@ export default class RenewalsPage extends AdminPage {
         </td>
         <td>
           <div className="AdSlotAdminTable-stack AdSlotAdminTable-stack--tight">
-            <span className="AdSlotAdminTable-sub">广告费：{this.formatMoney(attrs.adFeeAmount)}</span>
-            <span className="AdSlotAdminTable-sub">优惠：{this.formatMoney(attrs.discountAmount)}</span>
-            <span className="AdSlotAdminTable-sub is-strong">应付：{this.formatMoney(attrs.payableAmount)}</span>
-            {attrs.discountCode ? <span className="AdSlotAdminTable-codeTag">{attrs.discountCode}</span> : null}
           </div>
         </td>
-        <td className="AdSlotAdminTable-colThumb">{this.renderThumb(attrs.paymentProofPath, `续费凭证 #${item.id}`)}</td>
         <td className="AdSlotAdminTable-colTime">{this.formatDateOnly(attrs.oldEndsAt || originalItem.endsAt)}</td>
         <td className="AdSlotAdminTable-colTime">{attrs.newEndsAt ? this.formatDateOnly(attrs.newEndsAt) : '审核后计算'}</td>
         <td>{this.renderStatusBadge(attrs.status)}</td>

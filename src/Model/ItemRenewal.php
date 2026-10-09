@@ -15,6 +15,8 @@ class ItemRenewal extends AbstractModel
         'ad_fee_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'payable_amount' => 'decimal:2',
+        'point_transaction_id' => 'integer',
+        'points_refunded_at' => 'datetime',
         'old_ends_at' => 'datetime',
         'new_ends_at' => 'datetime',
         'reviewed_at' => 'datetime',

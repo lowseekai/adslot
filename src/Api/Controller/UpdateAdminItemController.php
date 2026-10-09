@@ -9,6 +9,7 @@ use Doingfb\AdSlot\Support\AdSlotTime;
 use Doingfb\AdSlot\Support\DiscountGroupGrantService;
 use Doingfb\AdSlot\Support\ImagePathManager;
 use Doingfb\AdSlot\Support\ItemValidator;
+use Doingfb\AdSlot\Support\PointReservationService;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
 use Flarum\Notification\NotificationSyncer;
@@ -25,7 +26,8 @@ class UpdateAdminItemController extends AbstractShowController
         protected ItemValidator $validator,
         protected ImagePathManager $imagePathManager,
         protected DiscountGroupGrantService $groupGrants,
-        protected NotificationSyncer $notifications
+        protected NotificationSyncer $notifications,
+        protected PointReservationService $pointReservations
     ) {
     }
 
@@ -136,6 +138,10 @@ class UpdateAdminItemController extends AbstractShowController
 
         $item->reviewed_by = $actor->id;
         $item->save();
+
+        if ($previousStatus !== 'rejected' && (string) $item->status === 'rejected') {
+            $this->pointReservations->refund($item);
+        }
 
         $grantedGroup = null;
 

@@ -17,8 +17,10 @@ class Item extends AbstractModel
         'ad_fee_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'payable_amount' => 'decimal:2',
+        'point_transaction_id' => 'integer',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'points_refunded_at' => 'datetime',
         'expiry_warning_notified_at' => 'datetime',
         'expired_notified_at' => 'datetime',
     ];

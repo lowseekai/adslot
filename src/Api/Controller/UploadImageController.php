@@ -22,17 +22,14 @@ class UploadImageController implements RequestHandlerInterface
         $actor = RequestUtil::getActor($request);
         $actor->assertRegistered();
 
-        $kind = Arr::get($request->getParsedBody() ?? [], 'kind', 'ad-image');
         $file = Arr::get($request->getUploadedFiles(), 'image');
-        $result = $kind === 'payment-proof'
-            ? $this->uploader->uploadPaymentProof($file)
-            : $this->uploader->uploadAdImage($file);
+        $result = $this->uploader->uploadAdImage($file);
 
         return new JsonResponse([
             'data' => [
                 'path' => $result['path'],
                 'url' => $result['url'],
-                'kind' => $kind,
+                'kind' => 'ad-image',
                 'width' => $result['width'],
                 'height' => $result['height'],
             ],

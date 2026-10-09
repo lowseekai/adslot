@@ -4,14 +4,15 @@ namespace Doingfb\AdSlot\Api\Controller;
 
 use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Serializer\ItemSerializer;
+use Doingfb\AdSlot\Support\AdSlotSettings;
 use Doingfb\AdSlot\Support\BusinessNotifier;
-use Doingfb\AdSlot\Support\DiscountCodeService;
 use Doingfb\AdSlot\Support\ItemValidator;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\RequestUtil;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramon\PointSystem\Repository\PointsRepository;
 use Tobscure\JsonApi\Document;
 
 class CreateItemController extends AbstractCreateController
@@ -20,7 +21,8 @@ class CreateItemController extends AbstractCreateController
 
     public function __construct(
         protected ItemValidator $validator,
-        protected DiscountCodeService $discountCodes,
+        protected AdSlotSettings $settings,
+        protected PointsRepository $points,
         protected BusinessNotifier $notifier
     ) {
     }
@@ -29,14 +31,10 @@ class CreateItemController extends AbstractCreateController
     {
         $actor = RequestUtil::getActor($request);
         $actor->assertRegistered();
-
-        $input = $this->validator->validateForCreate(
-            (array) Arr::get($request->getParsedBody(), 'data.attributes', [])
-        );
-        $pricing = $this->discountCodes->resolveSubmission($input['discountCode'] ?? null, $actor, $input['durationMonths'] ?? 1);
-
-        // 使用统一的支付凭证验证方法
-        $this->validator->validatePaymentProof($pricing, $input['paymentProofPath'] ?? null);
+        $input = $this->validator->validateForCreate((array) Arr::get($request->getParsedBody(), 'data.attributes', []));
+        $durationMonths = (int) ($input['durationMonths'] ?? 1);
+        $fee = round($this->settings->getBaseMonthlyFee() * $durationMonths, 2);
+        $pointsAmount = max(0, (int) round($fee));
 
         $item = new Item();
         $item->user_id = $actor->id;
@@ -46,24 +44,27 @@ class CreateItemController extends AbstractCreateController
         $item->contact_type = $input['contactType'];
         $item->contact_value = $input['contactValue'];
         $item->contact = $input['contactValue'];
-        $item->discount_code = $input['discountCode'] ?? null;
-        $item->payment_proof_path = $input['paymentProofPath'] ?? null;
-        $item->duration_months = $input['durationMonths'] ?? 1;
-        $item->ad_fee_amount = $pricing['adFeeAmount'];
-        $item->discount_amount = $pricing['discountAmount'];
-        $item->payable_amount = $pricing['payableAmount'];
+        $item->duration_months = $durationMonths;
+        $item->ad_fee_amount = $fee;
+        $item->discount_amount = 0;
+        $item->payable_amount = $fee;
         $item->status = 'pending';
         $item->is_visible = false;
+
         $item->save();
         $item->sort_order = max(1, (int) $item->id);
         $item->save();
-
-        $this->discountCodes->bindToItem($pricing['discountCode'], $item);
-        $this->notifier->notifyPendingReview($item, $actor);
-
-        if ($pricing['discountCode']) {
-            $this->notifier->notifyDiscountCodeUsed($item, $pricing['discountCode'], $actor);
+        if ($pointsAmount > 0) {
+            try {
+                $transaction = $this->points->deduct($actor, $pointsAmount, 'adslot.application', 'adslot_item', $item->id);
+                $item->point_transaction_id = $transaction->id;
+                $item->save();
+            } catch (\DomainException) {
+                $item->delete();
+                throw new ValidationException(['points' => '????????????????']);
+            }
         }
+        $this->notifier->notifyPendingReview($item, $actor);
 
         return $item;
     }

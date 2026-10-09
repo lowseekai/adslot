@@ -24,7 +24,7 @@ class NotifyAdSlotExpiryCommand extends AbstractCommand
             ->setDescription('Send ad slot expiry notifications.');
     }
 
-    protected function fire()
+    protected function fire(): int
     {
         $now = AdSlotTime::now();
         $warningDeadline = $now->copy()->addDays(3);
@@ -70,5 +70,9 @@ class NotifyAdSlotExpiryCommand extends AbstractCommand
         $revokedGrantCount = $this->groupGrants->revokeExpired($now);
 
         $this->info("AdSlot expiry notifications sent. expiring={$expiringCount}, expired={$expiredCount}, revokedGroupGrants={$revokedGrantCount}");
+
+        return 0;
     }
 }
+
+

@@ -2,23 +2,38 @@
 
 namespace Doingfb\AdSlot\Api\Controller;
 
-use Doingfb\AdSlot\Serializer\ItemSerializer;
 use Doingfb\AdSlot\Support\ItemRepository;
-use Flarum\Api\Controller\AbstractListController;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ListPublicItemsController extends AbstractListController
+class ListPublicItemsController implements RequestHandlerInterface
 {
-    public $serializer = ItemSerializer::class;
-
     public function __construct(
         protected ItemRepository $items
     ) {
     }
 
-    protected function data(ServerRequestInterface $request, Document $document): iterable
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->items->queryVisible()->get();
+        $items = $this->items->queryVisible()->get()->map(function ($item) {
+            return [
+                'type' => 'adslot-items',
+                'id' => (string) $item->id,
+                'attributes' => [
+                    'merchantName' => $item->merchant_name,
+                    'imagePath' => $item->image_path,
+                    'targetUrl' => $item->target_url,
+                    'status' => $item->status,
+                    'isPinned' => (bool) $item->is_pinned,
+                    'isVisible' => (bool) $item->is_visible,
+                    'startsAt' => $item->starts_at?->toAtomString(),
+                    'endsAt' => $item->ends_at?->toAtomString(),
+                ],
+            ];
+        })->values()->all();
+
+        return new JsonResponse(['data' => $items]);
     }
 }

@@ -54,5 +54,5 @@ app.initializers.add('doingfb-adslot', () => {
   app.routes.adslotRenewals = { path: '/adslot/renewals', component: RenewalsPage };
   app.routes.adslotReviews = { path: '/adslot/reviews', component: ReviewsPage };
 
-  app.extensionData.for('doingfb-adslot').registerSetting(() => <ExtensionPanel />, 100);
+  app.registry.for('doingfb-adslot').registerSetting(() => <ExtensionPanel />, 100);
 });

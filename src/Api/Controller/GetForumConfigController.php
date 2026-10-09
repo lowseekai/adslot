@@ -1,12 +1,12 @@
 <?php
 
-namespace DoingfbAdSlotApiController;
+namespace Doingfb\AdSlot\Api\Controller;
 
-use DoingfbAdSlotSupportAdSlotSettings;
-use LaminasDiactorosResponseJsonResponse;
-use PsrHttpMessageResponseInterface;
-use PsrHttpMessageServerRequestInterface;
-use PsrHttpServerRequestHandlerInterface;
+use Doingfb\AdSlot\Support\AdSlotSettings;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class GetForumConfigController implements RequestHandlerInterface
 {

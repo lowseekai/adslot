@@ -7,8 +7,6 @@ import NotificationsDropdown from 'flarum/forum/components/NotificationsDropdown
 import IndexPage from 'flarum/forum/components/IndexPage';
 import UserPage from 'flarum/forum/components/UserPage';
 import AdSlotItem from '../common/models/AdSlotItem';
-import AdSlotBusinessNotification from './components/AdSlotBusinessNotification';
-import ItemReviewedNotification from './components/ItemReviewedNotification';
 import ProvidersPage from './components/ProvidersPage';
 import ApplyPage from './components/ApplyPage';
 import MyAdsPage from './components/MyAdsPage';
@@ -18,13 +16,6 @@ app.initializers.add('doingfb-adslot', () => {
   app.routes.adslotMy = { path: '/providers/my', component: MyAdsPage };
   app.routes.adslotApply = { path: '/providers/apply', component: ApplyPage };
   app.store.models['adslot-items'] = AdSlotItem;
-  app.notificationComponents.adslotItemReviewed = ItemReviewedNotification;
-  app.notificationComponents.adslotItemPendingReview = AdSlotBusinessNotification;
-  app.notificationComponents.adslotItemRenewalPendingReview = AdSlotBusinessNotification;
-  app.notificationComponents.adslotItemRenewalReviewed = AdSlotBusinessNotification;
-  app.notificationComponents.adslotItemExpiring = AdSlotBusinessNotification;
-  app.notificationComponents.adslotItemExpired = AdSlotBusinessNotification;
-  app.notificationComponents.adslotDiscountCodeUsed = AdSlotBusinessNotification;
 
   override(NotificationsDropdown.prototype, 'onclick', function (original, event) {
     if (event) {

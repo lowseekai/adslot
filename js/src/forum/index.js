@@ -38,7 +38,7 @@ class MyAdsPage {
 }
 
 app.initializers.add('doingfb-adslot', () => {
-  app.routes.adslotProviders = { path: '/providers', component: ProvidersPage };
-  app.routes.adslotMy = { path: '/providers/my', component: MyAdsPage };
-  app.routes.adslotApply = { path: '/providers/apply', component: ApplyPage };
+  app.routes.adslotProviders = { path: '/providers', component: () => Promise.resolve({ default: ProvidersPage }) };
+  app.routes.adslotMy = { path: '/providers/my', component: () => Promise.resolve({ default: MyAdsPage }) };
+  app.routes.adslotApply = { path: '/providers/apply', component: () => Promise.resolve({ default: ApplyPage }) };
 });

@@ -3,9 +3,11 @@
 namespace Doingfb\AdSlot\Notification;
 
 use Doingfb\AdSlot\Model\Item;
+use Flarum\Database\AbstractModel;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Flarum\User\User;
+use Flarum\Locale\TranslatorInterface;
 
 class ItemExpiringBlueprint implements BlueprintInterface, MailableInterface
 {
@@ -15,37 +17,37 @@ class ItemExpiringBlueprint implements BlueprintInterface, MailableInterface
     ) {
     }
 
-    public function getSubject()
+    public function getSubject(): ?AbstractModel
     {
         return $this->item;
     }
 
-    public function getFromUser()
+    public function getFromUser(): ?User
     {
         return null;
     }
 
-    public function getData()
+    public function getData(): mixed
     {
         return $this->payload;
     }
 
-    public function getEmailView()
+    public function getEmailViews(): array
     {
-        return ['text' => 'doingfb-adslot::emails.item-expiring'];
+        return ['text' => 'doingfb-adslot::emails.item-expiring', 'html' => 'doingfb-adslot::emails.item-expiring'];
     }
 
-    public function getEmailSubject(TranslatorInterface $translator)
+    public function getEmailSubject(TranslatorInterface $translator): string
     {
         return $translator->trans('doingfb-adslot.email.item_expiring.subject');
     }
 
-    public static function getType()
+    public static function getType(): string
     {
         return 'adslotItemExpiring';
     }
 
-    public static function getSubjectModel()
+    public static function getSubjectModel(): string
     {
         return Item::class;
     }

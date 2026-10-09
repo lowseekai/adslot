@@ -3,10 +3,11 @@
 namespace Doingfb\AdSlot\Notification;
 
 use Doingfb\AdSlot\Model\Item;
+use Flarum\Database\AbstractModel;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\User\User;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Flarum\Locale\TranslatorInterface;
 
 class ItemReviewedBlueprint implements BlueprintInterface, MailableInterface
 {
@@ -17,37 +18,37 @@ class ItemReviewedBlueprint implements BlueprintInterface, MailableInterface
     ) {
     }
 
-    public function getSubject()
+    public function getSubject(): ?AbstractModel
     {
         return $this->item;
     }
 
-    public function getFromUser()
+    public function getFromUser(): ?User
     {
         return $this->reviewer;
     }
 
-    public function getData()
+    public function getData(): mixed
     {
         return $this->payload;
     }
 
-    public function getEmailView()
+    public function getEmailViews(): array
     {
-        return ['text' => 'doingfb-adslot::emails.item-reviewed'];
+        return ['text' => 'doingfb-adslot::emails.item-reviewed', 'html' => 'doingfb-adslot::emails.item-reviewed'];
     }
 
-    public function getEmailSubject(TranslatorInterface $translator)
+    public function getEmailSubject(TranslatorInterface $translator): string
     {
         return $translator->trans('doingfb-adslot.email.item_reviewed.subject');
     }
 
-    public static function getType()
+    public static function getType(): string
     {
         return 'adslotItemReviewed';
     }
 
-    public static function getSubjectModel()
+    public static function getSubjectModel(): string
     {
         return Item::class;
     }

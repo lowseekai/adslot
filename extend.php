@@ -29,7 +29,6 @@ use Doingfb\AdSlot\Notification\ItemRenewalReviewedBlueprint;
 use Doingfb\AdSlot\Notification\ItemReviewedBlueprint;
 use Doingfb\AdSlot\Serializer\ItemSerializer;
 use Doingfb\AdSlot\Support\AdSlotSettings;
-use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
 use Illuminate\Console\Scheduling\Event;
 
@@ -73,17 +72,6 @@ return [
         ->post('/adslot/admin/items/{id}/delete', 'adslot.admin.items.delete.post', DeleteItemController::class)
         ->post('/adslot/admin/items/delete', 'adslot.admin.items.delete.body', DeleteItemController::class),
 
-    (new Extend\ApiSerializer(ForumSerializer::class))
-        ->attributes(function (ForumSerializer $serializer) {
-            $settings = resolve(AdSlotSettings::class);
-
-            return [
-                'doingfb-adslot.baseMonthlyFee' => $settings->getBaseMonthlyFee(),
-                'doingfb-adslot.noticeBarEnabled' => $settings->getNoticeBarEnabled(),
-                'doingfb-adslot.noticeBarText' => $settings->getNoticeBarText(),
-            ];
-        }),
-
     (new Extend\Notification())
         ->type(ItemReviewedBlueprint::class, ItemSerializer::class, ['alert', 'email'])
         ->type(ItemPendingReviewBlueprint::class, ItemSerializer::class, ['alert', 'email'])
@@ -98,3 +86,4 @@ return [
         }),
 
 ];
+

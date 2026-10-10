@@ -61,7 +61,7 @@ class CreateItemController extends AbstractCreateController
                 $item->save();
             } catch (\DomainException) {
                 $item->delete();
-                throw new ValidationException(['points' => '????????????????']);
+                throw new ValidationException(['points' => '积分余额不足，无法提交广告申请。']);
             }
         }
         $this->notifier->notifyPendingReview($item, $actor);

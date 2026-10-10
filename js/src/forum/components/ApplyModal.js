@@ -19,12 +19,7 @@ export default class ApplyModal extends Modal {
   }
 
   className() { return 'AdSlotApplyModal Modal--large'; }
-
-  title() {
-    if (this.mode === 'edit') return '修改广告申请';
-    if (this.mode === 'renew') return '广告续费申请';
-    return '申请商家展示';
-  }
+  title() { return this.mode === 'edit' ? '修改广告申请' : this.mode === 'renew' ? '广告续费申请' : '申请商家展示'; }
 
   content() {
     const disabled = this.submitting || this.uploading;
@@ -45,10 +40,7 @@ export default class ApplyModal extends Modal {
   onImageChange(event) { this.imageFile = event.target.files?.[0] || null; this.previewUrl = this.imageFile ? URL.createObjectURL(this.imageFile) : this.form.imagePath; }
 
   async submit(event) {
-    event.preventDefault();
-    this.submitting = true;
-    this.error = '';
-    let uploadedPath = '';
+    event.preventDefault(); this.submitting = true; this.error = ''; let uploadedPath = '';
     try {
       if (!this.form.contactValue.trim()) throw new Error('联系方式不能为空');
       if (this.mode !== 'renew') {
@@ -57,28 +49,15 @@ export default class ApplyModal extends Modal {
         if (this.imageFile) { uploadedPath = await this.uploadImage(this.imageFile); this.form.imagePath = uploadedPath; }
         if (!this.form.imagePath) throw new Error('请上传广告图');
       }
-      const api = app.forum.attribute('apiUrl');
-      const isRenew = this.mode === 'renew' && this.item?.id;
-      const isEdit = this.mode === 'edit' && this.item?.id;
+      const api = app.forum.attribute('apiUrl'); const isRenew = this.mode === 'renew' && this.item?.id; const isEdit = this.mode === 'edit' && this.item?.id;
       const url = isRenew ? `${api}/adslot/items/${this.item.id}/renewals` : isEdit ? `${api}/adslot/items/${this.item.id}` : `${api}/adslot/items`;
-      const method = isRenew ? 'POST' : isEdit ? 'PATCH' : 'POST';
-      const attributes = isRenew ? { durationMonths: this.form.durationMonths, contactType: this.form.contactType, contactValue: this.form.contactValue } : this.form;
+      const method = isRenew ? 'POST' : isEdit ? 'PATCH' : 'POST'; const attributes = isRenew ? { durationMonths: this.form.durationMonths, contactType: this.form.contactType, contactValue: this.form.contactValue } : this.form;
       await app.request({ method, url, body: { data: { id: this.item?.id, attributes } } });
-      app.alerts.show({ type: 'success' }, '申请已提交，等待管理员审核。');
-      this.attrs.onsubmitted?.();
-      this.hide();
-    } catch (error) {
-      if (uploadedPath) this.cleanupUploadedImage(uploadedPath);
-      this.error = error?.response?.errors?.[0]?.detail || error?.message || '提交失败，请稍后重试。';
-    }
-    this.submitting = false;
-    m.redraw();
+      app.alerts.show({ type: 'success' }, '申请已提交，等待管理员审核。'); this.attrs.onsubmitted?.(); this.hide();
+    } catch (error) { if (uploadedPath) this.cleanupUploadedImage(uploadedPath); this.error = error?.response?.errors?.[0]?.detail || error?.response?.errors?.[0]?.title || error?.message || '提交失败，请稍后重试。'; }
+    this.submitting = false; m.redraw();
   }
 
-  async uploadImage(file) {
-    this.uploading = true;
-    try { const body = new FormData(); body.append('image', file); body.append('kind', 'ad-image'); const response = await app.request({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/adslot/upload-image`, serialize: (value) => value, body }); return response?.data?.path || ''; } finally { this.uploading = false; }
-  }
-
+  async uploadImage(file) { this.uploading = true; try { const body = new FormData(); body.append('image', file); const response = await app.request({ method: 'POST', url: `${app.forum.attribute('apiUrl')}/adslot/upload-image`, serialize: (value) => value, body }); return response?.data?.path || ''; } finally { this.uploading = false; } }
   async cleanupUploadedImage(path) { try { await app.request({ method: 'DELETE', url: `${app.forum.attribute('apiUrl')}/adslot/upload-image`, body: { path } }); } catch (_) {} }
 }

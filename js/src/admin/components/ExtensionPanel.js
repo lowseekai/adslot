@@ -341,7 +341,7 @@ export default class ExtensionPanel extends ExtensionPage {
       this.config = {
         baseMonthlyFee: String(data.baseMonthlyFee ?? ''),
         noticeBarEnabled: data.noticeBarEnabled !== false,
-        noticeBarText: String(data.noticeBarText || '??????'),
+        noticeBarText: String(data.noticeBarText || '欢迎来到商家合作中心。'),
         groups: data.groups || [],
       };
     } catch (error) {
@@ -371,6 +371,34 @@ export default class ExtensionPanel extends ExtensionPage {
     );
   }
 
+  async saveConfig(attributes, successMessage, module) {
+    this.configSaving = true;
+    this.configSavingModule = module;
+    this.configError = '';
+    this.configNotice = '';
+    this.redrawNow();
+
+    try {
+      const response = await app.request({
+        method: 'POST',
+        url: `${this.apiUrl()}/adslot/admin/config`,
+        body: { data: { attributes } },
+      });
+      const data = response.data || {};
+      this.config.baseMonthlyFee = String(data.baseMonthlyFee ?? this.config.baseMonthlyFee);
+      this.config.noticeBarEnabled = data.noticeBarEnabled !== false;
+      this.config.noticeBarText = String(data.noticeBarText || this.config.noticeBarText);
+      this.configNotice = successMessage;
+      app.alerts.show({ type: 'success' }, successMessage);
+    } catch (error) {
+      this.configError = error?.response?.errors?.[0]?.detail || error?.message || '保存失败';
+    } finally {
+      this.configSaving = false;
+      this.configSavingModule = '';
+      this.redrawNow();
+    }
+  }
+
   openEditModal(item) {
     app.modal.show(EditItemModal, {
       item,
@@ -379,13 +407,14 @@ export default class ExtensionPanel extends ExtensionPage {
   }
 
   async quickUpdate(id, attributes) {
-    await app.request({
-      method: 'POST',
-      url: `${this.apiUrl()}/adslot/admin/items/update`,
-      body: { data: { id, attributes } },
-    });
-
-    this.loadRecentItems();
+    try {
+      await app.request({ method: 'POST', url: `${this.apiUrl()}/adslot/admin/items/update`, body: { data: { id, attributes } } });
+      await this.loadRecentItems();
+      app.alerts.show({ type: 'success' }, '广告状态已更新。');
+    } catch (error) {
+      this.error = error?.response?.errors?.[0]?.detail || error?.message || '操作失败';
+      this.redrawNow();
+    }
   }
 
   async toggleVisible(item) {
@@ -405,13 +434,14 @@ export default class ExtensionPanel extends ExtensionPage {
       return;
     }
 
-    await app.request({
-      method: 'POST',
-      url: `${this.apiUrl()}/adslot/admin/items/delete`,
-      body: { data: { id } },
-    });
-
-    this.loadRecentItems();
+    try {
+      await app.request({ method: 'POST', url: `${this.apiUrl()}/adslot/admin/items/delete`, body: { data: { id } } });
+      await this.loadRecentItems();
+      app.alerts.show({ type: 'success' }, '广告已删除。');
+    } catch (error) {
+      this.error = error?.response?.errors?.[0]?.detail || error?.message || '删除失败';
+      this.redrawNow();
+    }
   }
 
   formatDate(value) {

@@ -209,13 +209,14 @@ export default class ReviewsPage extends AdminPage {
   }
 
   async quickUpdate(id, attributes) {
-    await app.request({
-      method: 'POST',
-      url: `${this.apiUrl()}/adslot/admin/items/update`,
-      body: { data: { id, attributes } },
-    });
-
-    this.loadItems();
+    try {
+      await app.request({ method: 'POST', url: `${this.apiUrl()}/adslot/admin/items/update`, body: { data: { id, attributes } } });
+      await this.loadItems();
+      app.alerts.show({ type: 'success' }, '广告状态已更新。');
+    } catch (error) {
+      this.error = this.errorMessage(error) || '操作失败';
+      m.redraw();
+    }
   }
 
   async toggleVisible(item) {
@@ -235,14 +236,15 @@ export default class ReviewsPage extends AdminPage {
       return;
     }
 
-    await app.request({
-      method: 'POST',
-      url: `${this.apiUrl()}/adslot/admin/items/delete`,
-      body: { data: { id: item.id } },
-    });
-
-    this.page = this.items.length === 1 && this.page > 1 ? this.page - 1 : this.page;
-    this.loadItems();
+    try {
+      await app.request({ method: 'POST', url: `${this.apiUrl()}/adslot/admin/items/delete`, body: { data: { id: item.id } } });
+      this.page = this.items.length === 1 && this.page > 1 ? this.page - 1 : this.page;
+      await this.loadItems();
+      app.alerts.show({ type: 'success' }, '广告已删除。');
+    } catch (error) {
+      this.error = this.errorMessage(error) || '删除失败';
+      m.redraw();
+    }
   }
 
   formatDate(value) {

@@ -64,7 +64,7 @@ class CreateItemRenewalController extends AbstractCreateController
                 $renewal->save();
             } catch (\DomainException) {
                 $renewal->delete();
-                throw new ValidationException(['points' => '????????????????']);
+                throw new ValidationException(['points' => '积分余额不足，无法提交续费申请。']);
             }
         }
         $this->notifier->notifyRenewalPendingReview($renewal, $actor);

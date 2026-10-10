@@ -10,6 +10,11 @@ class ItemSerializer extends AbstractSerializer
 {
     protected $type = 'adslot-items';
 
+    public function attributes($item): array
+    {
+        return $this->getDefaultAttributes($item);
+    }
+
     /**
      * @param Item $item
      */

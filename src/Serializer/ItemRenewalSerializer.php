@@ -10,6 +10,11 @@ class ItemRenewalSerializer extends AbstractSerializer
 {
     protected $type = 'adslot-item-renewals';
 
+    public function attributes($renewal): array
+    {
+        return $this->getDefaultAttributes($renewal);
+    }
+
     /**
      * @param ItemRenewal $renewal
      */

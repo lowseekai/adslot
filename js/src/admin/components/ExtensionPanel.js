@@ -315,8 +315,6 @@ export default class ExtensionPanel extends Component {
           },
         }),
       ]);
-      this.broadcastRuntimeConfigRefresh();
-
       this.items = response.data || [];
       this.meta = response.meta || { total: this.items.length, hasMore: false };
       this.pendingTotal = Number(pendingResponse?.meta?.total ?? pendingResponse?.data?.length ?? 0);
@@ -339,8 +337,6 @@ export default class ExtensionPanel extends Component {
         method: 'GET',
         url: `${this.apiUrl()}/adslot/admin/config`,
       });
-      this.broadcastRuntimeConfigRefresh();
-
       const data = response.data || {};
       this.config = {
         baseMonthlyFee: String(data.baseMonthlyFee ?? ''),

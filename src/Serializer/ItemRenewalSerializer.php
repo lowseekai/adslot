@@ -4,9 +4,8 @@ namespace Doingfb\AdSlot\Serializer;
 
 use Doingfb\AdSlot\Model\ItemRenewal;
 use Doingfb\AdSlot\Support\AdSlotTime;
-use Flarum\Api\Serializer\AbstractSerializer;
 
-class ItemRenewalSerializer extends AbstractSerializer
+class ItemRenewalSerializer
 {
     protected $type = 'adslot-item-renewals';
 

@@ -4,9 +4,8 @@ namespace Doingfb\AdSlot\Serializer;
 
 use Doingfb\AdSlot\Model\Item;
 use Doingfb\AdSlot\Support\AdSlotTime;
-use Flarum\Api\Serializer\AbstractSerializer;
 
-class ItemSerializer extends AbstractSerializer
+class ItemSerializer
 {
     protected $type = 'adslot-items';
 

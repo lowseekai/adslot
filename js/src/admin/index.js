@@ -60,6 +60,17 @@ app.initializers.add('doingfb-adslot', () => {
   // registerSetting alone only contributes fields to the generic settings page.
   extension
     .registerPage(ExtensionPanel)
+    .registerSetting({
+      setting: 'doingfb-adslot.baseMonthlyFee',
+      type: 'number',
+      label: 'Monthly advertising price (points)',
+      help: 'Default monthly price used when a new advertisement is submitted.',
+    })
+    .registerSetting({
+      setting: 'doingfb-adslot.noticeBarEnabled',
+      type: 'boolean',
+      label: 'Show provider page notice',
+    })
     .registerPermission(
       {
         icon: 'fas fa-rectangle-ad',

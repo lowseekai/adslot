@@ -1,8 +1,8 @@
 const app = flarum.core.app;
-const IndexSidebar = flarum.core.compat['forum/components/IndexSidebar'];
-const extend = flarum.core.compat['common/extend'];
-const LinkButton = flarum.core.compat['common/components/LinkButton'];
-const Modal = flarum.core.compat['common/components/Modal'];
+const IndexSidebar = flarum.reg.get('core', 'forum/components/IndexSidebar');
+const extend = flarum.reg.get('core', 'common/extend');
+const LinkButton = flarum.reg.get('core', 'common/components/LinkButton');
+const Modal = flarum.reg.get('core', 'common/components/Modal');
 
 class ApplyModal extends Modal {
   oninit(vnode) { super.oninit(vnode); this.form = { merchantName: '', imagePath: '', targetUrl: '', contactValue: '', durationMonths: 1 }; this.busy = false; this.error = ''; }

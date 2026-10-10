@@ -1,4 +1,8 @@
 doingfb-adslot:
+  admin:
+    permissions:
+      review_ads: 审核商家广告
+      manage_ads: 管理商家广告
   forum:
     notifications:
       item_reviewed_approved_text: "你的商家广告已通过审核，广告图已开始展示。"

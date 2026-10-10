@@ -1,6 +1,4 @@
 import app from 'flarum/admin/app';
-import RenewalsPage from './components/RenewalsPage';
-import ReviewsPage from './components/ReviewsPage';
 import ExtensionPanel from './components/ExtensionPanel';
 
 const ADMIN_STYLE_OVERRIDE_ID = 'doingfb-adslot-admin-style-overrides';
@@ -51,9 +49,6 @@ function ensureAdminStyleOverrides() {
 
 app.initializers.add('doingfb-adslot', () => {
   ensureAdminStyleOverrides();
-  app.routes.adslotRenewals = { path: '/adslot/renewals', component: RenewalsPage };
-  app.routes.adslotReviews = { path: '/adslot/reviews', component: ReviewsPage };
-
   const extension = app.extensionData?.for?.('doingfb-adslot') || app.registry?.for?.('doingfb-adslot');
 
   if (!extension) {

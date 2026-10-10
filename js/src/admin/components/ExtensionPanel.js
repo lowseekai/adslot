@@ -1,12 +1,12 @@
 ﻿import app from 'flarum/admin/app';
-import Component from 'flarum/common/Component';
+import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Button from 'flarum/common/components/Button';
 import LinkButton from 'flarum/common/components/LinkButton';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import EditItemModal from './EditItemModal';
 import ReviewTable from './ReviewTable';
 
-export default class ExtensionPanel extends Component {
+export default class ExtensionPanel extends ExtensionPage {
   redrawNow() {
     if (typeof m === 'undefined' || typeof m.redraw !== 'function') {
       return;
@@ -57,7 +57,7 @@ export default class ExtensionPanel extends Component {
     this.config = {
       baseMonthlyFee: '',
       noticeBarEnabled: true,
-      noticeBarText: 'Coming soon',
+      noticeBarText: '欢迎来到商家合作中心。',
       groups: [],
     };
 
@@ -93,48 +93,48 @@ export default class ExtensionPanel extends Component {
     this._isRemoved = true;
   }
 
-  view() {
+  content() {
     return (
       <div className="AdSlotAdminPage">
         <div className="AdSlotAdminPage-shell">
           <div className="AdSlotAdminCard">
             <div className="AdSlotAdminCard-head">
-              <div><h3>AdSlot settings</h3><p>Set monthly price in points and the optional front-end notice.</p></div>
+              <div><h3>广告位设置</h3><p>设置广告位每月积分价格和前台公告。</p></div>
               <div className="AdSlotAdminCard-headActions">
-                <LinkButton className="Button AdSlotAdminGhostButton" href={app.route('adslotRenewals')} icon="fas fa-rotate-right">Renewals</LinkButton>
+                <LinkButton className="Button AdSlotAdminGhostButton" href={app.route('adslotRenewals')} icon="fas fa-rotate-right">续费审核</LinkButton>
               </div>
             </div>
             <div className="AdSlotAdminConfigSections">
               <section className="AdSlotAdminConfigSection">
                 <div className="AdSlotAdminConfigSection-head">
-                  <div><h4>Point price</h4><p>Monthly advertising price, charged in points.</p></div>
-                  {Button.component({ type: 'button', className: 'Button Button--primary AdSlotAdminPrimaryButton', loading: this.configSavingModule === 'fees', onclick: () => this.saveFeesConfig(), disabled: this.configLoading || this.configSaving }, 'Save price')}
+                  <div><h4>积分价格</h4><p>广告位按月收取积分。</p></div>
+                  {Button.component({ type: 'button', className: 'Button Button--primary AdSlotAdminPrimaryButton', loading: this.configSavingModule === 'fees', onclick: () => this.saveFeesConfig(), disabled: this.configLoading || this.configSaving }, '保存价格')}
                 </div>
                 <div className="AdSlotAdminToolbar AdSlotAdminToolbar--config">
-                  <label className="AdSlotAdminField"><span>Points / month</span>
+                  <label className="AdSlotAdminField"><span>每月积分</span>
                     <input className="FormControl" type="number" min="0" step="1" value={this.config.baseMonthlyFee} oninput={(event) => (this.config.baseMonthlyFee = event.target.value)} disabled={this.configLoading || this.configSaving} />
                   </label>
                 </div>
               </section>
               <section className={`AdSlotAdminConfigSection${this.isConfigSectionExpanded('notice') ? ' is-expanded' : ' is-collapsed'}`}>
                 <div className="AdSlotAdminConfigSection-head">
-                  <div><h4>Front-end notice</h4><p>Control the notice shown on the provider page.</p></div>
+                  <div><h4>前台公告</h4><p>控制商家合作页面显示的公告。</p></div>
                   <div className="AdSlotAdminConfigSection-headActions">
-                    {Button.component({ type: 'button', className: 'Button AdSlotAdminGhostButton', icon: this.isConfigSectionExpanded('notice') ? 'fas fa-chevron-up' : 'fas fa-chevron-down', onclick: () => this.toggleConfigSection('notice'), disabled: this.configLoading || this.configSaving }, this.isConfigSectionExpanded('notice') ? 'Collapse' : 'Expand')}
-                    {this.isConfigSectionExpanded('notice') ? Button.component({ type: 'button', className: 'Button Button--primary AdSlotAdminPrimaryButton', loading: this.configSavingModule === 'notice', onclick: () => this.saveNoticeConfig(), disabled: this.configLoading || this.configSaving }, 'Save notice') : null}
+                    {Button.component({ type: 'button', className: 'Button AdSlotAdminGhostButton', icon: this.isConfigSectionExpanded('notice') ? 'fas fa-chevron-up' : 'fas fa-chevron-down', onclick: () => this.toggleConfigSection('notice'), disabled: this.configLoading || this.configSaving }, this.isConfigSectionExpanded('notice') ? '收起' : '展开')}
+                    {this.isConfigSectionExpanded('notice') ? Button.component({ type: 'button', className: 'Button Button--primary AdSlotAdminPrimaryButton', loading: this.configSavingModule === 'notice', onclick: () => this.saveNoticeConfig(), disabled: this.configLoading || this.configSaving }, '保存公告') : null}
                   </div>
                 </div>
                 {this.isConfigSectionExpanded('notice') ? (
                   <div className="AdSlotAdminNoticeConfig">
-                    <label className="checkbox AdSlotAdminNoticeToggle"><input type="checkbox" checked={this.config.noticeBarEnabled} onchange={(event) => (this.config.noticeBarEnabled = event.target.checked)} disabled={this.configLoading || this.configSaving} /> Enable notice</label>
-                    <label className="AdSlotAdminField AdSlotAdminField--noticeText"><span>Notice text</span>
-                      <textarea className="FormControl" maxlength="2000" rows="4" value={this.config.noticeBarText} oninput={(event) => (this.config.noticeBarText = event.target.value)} disabled={this.configLoading || this.configSaving} placeholder="Coming soon"></textarea>
+                    <label className="checkbox AdSlotAdminNoticeToggle"><input type="checkbox" checked={this.config.noticeBarEnabled} onchange={(event) => (this.config.noticeBarEnabled = event.target.checked)} disabled={this.configLoading || this.configSaving} /> 启用公告</label>
+                    <label className="AdSlotAdminField AdSlotAdminField--noticeText"><span>公告内容</span>
+                      <textarea className="FormControl" maxlength="2000" rows="4" value={this.config.noticeBarText} oninput={(event) => (this.config.noticeBarText = event.target.value)} disabled={this.configLoading || this.configSaving} placeholder="请输入前台公告"></textarea>
                     </label>
                   </div>
                 ) : null}
               </section>
             </div>
-            {this.configLoading ? <div className="AdSlotAdminPage-notice"><LoadingIndicator display="inline" size="small" /> Loading configuration...</div> : null}
+            {this.configLoading ? <div className="AdSlotAdminPage-notice"><LoadingIndicator display="inline" size="small" /> 正在加载配置...</div> : null}
             {this.configError ? <div className="AdSlotAdminPage-error">{this.configError}</div> : null}
           </div>
         </div>
@@ -143,13 +143,13 @@ export default class ExtensionPanel extends Component {
           <div className="AdSlotAdminCard AdSlotAdminCard--table">
             <div className="AdSlotAdminCard-head">
               <div>
-                <h3>AdSlot Admin</h3>
+                <h3>广告审核</h3>
                 <p>首页展示最近 10 条商家数据，减少后台首页信息拥挤；完整审核列表进入更多页面处理。</p>
               </div>
               <div className="AdSlotAdminCard-headActions">
                 {this.renderReviewFilters()}
                 <LinkButton className="Button AdSlotAdminGhostButton" href={app.route('adslotReviews')} icon="fas fa-table-list">
-                  更多审核数据
+                  查看全部审核
                 </LinkButton>
               </div>
             </div>
@@ -355,7 +355,7 @@ export default class ExtensionPanel extends Component {
   saveFeesConfig() {
     return this.saveConfig(
       { baseMonthlyFee: Math.max(0, Math.round(Number(this.config.baseMonthlyFee || 0))) },
-      'Point price saved.',
+      '价格设置已保存。',
       'fees'
     );
   }
@@ -364,7 +364,7 @@ export default class ExtensionPanel extends Component {
     return this.saveConfig(
       {
         noticeBarEnabled: !!this.config.noticeBarEnabled,
-        noticeBarText: this.config.noticeBarText || 'Coming soon',
+        noticeBarText: this.config.noticeBarText || '欢迎来到商家合作中心。',
       },
       '公告栏设置已保存。',
       'notice'

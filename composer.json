@@ -14,7 +14,7 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "AdSlot",
+            "title": "广告中心",
             "icon": {
                 "name": "fas fa-rectangle-ad",
                 "backgroundColor": "#d9a62e",

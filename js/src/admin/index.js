@@ -50,8 +50,6 @@ function ensureAdminStyleOverrides() {
 }
 
 app.initializers.add('doingfb-adslot', () => {
-  ensureAdminStyleOverrides();
-
   app.routes.adslotRenewals = {
     path: '/adslot/renewals',
     component: RenewalsPage,

@@ -27,6 +27,8 @@ use Doingfb\AdSlot\Notification\ItemPendingReviewBlueprint;
 use Doingfb\AdSlot\Notification\ItemRenewalPendingReviewBlueprint;
 use Doingfb\AdSlot\Notification\ItemRenewalReviewedBlueprint;
 use Doingfb\AdSlot\Notification\ItemReviewedBlueprint;
+use Doingfb\AdSlot\Model\Item;
+use Doingfb\AdSlot\Policy\AdSlotPolicy;
 use Doingfb\AdSlot\Support\AdSlotSettings;
 use Flarum\Extend;
 use Illuminate\Console\Scheduling\Event;
@@ -44,6 +46,9 @@ return [
         ->route('/providers/apply', 'adslot.apply', ApplyPage::class),
 
     new Extend\Locales(__DIR__.'/locale'),
+
+    (new Extend\Policy())
+        ->modelPolicy(Item::class, AdSlotPolicy::class),
 
     (new Extend\View())
         ->namespace('doingfb-adslot', __DIR__.'/views'),

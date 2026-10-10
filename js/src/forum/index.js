@@ -2,8 +2,9 @@ const app = flarum.core.app;
 const IndexSidebar = flarum.reg.get('core', 'forum/components/IndexSidebar');
 const extend = flarum.reg.get('core', 'common/extend');
 const LinkButton = flarum.reg.get('core', 'common/components/LinkButton');
+const Modal = flarum.reg.get('core', 'common/components/Modal');
 
-class ApplyModal {
+class ApplyModal extends Modal {
   oninit() { this.form = { merchantName: '', imagePath: '', targetUrl: '', contactValue: '', durationMonths: 1 }; this.busy = false; this.error = ''; }
   view() {
     const field = (label, key, type = 'text') => m('.Form-group', [m('label', label), m('input.FormControl', { required: true, type, value: this.form[key], oninput: (e) => { this.form[key] = e.target.value; } })]);

@@ -21,8 +21,8 @@ class MyAdsPage { view() { return m('.container', [m('h1', 'My ads'), m('p', 'Si
 class ApplyPage { view() { return m('.container', [m('h1', 'Apply for an ad slot'), m('button.Button.Button--primary', { onclick: () => { m.route.set(app.route('adslotProviders')); setTimeout(() => app.modal.show(ApplyModal), 0); } }, 'Open application form')]); } }
 
 app.initializers.add('doingfb-adslot', () => {
-  app.routes.adslotProviders = { path: '/providers', component: () => Promise.resolve({ default: ProvidersPage }) };
-  app.routes.adslotMy = { path: '/providers/my', component: () => Promise.resolve({ default: MyAdsPage }) };
-  app.routes.adslotApply = { path: '/providers/apply', component: () => Promise.resolve({ default: ApplyPage }) };
+  app.routes.adslotProviders = { path: '/providers', component: ProvidersPage };
+  app.routes.adslotMy = { path: '/providers/my', component: MyAdsPage };
+  app.routes.adslotApply = { path: '/providers/apply', component: ApplyPage };
   if (IndexSidebar && extend) extend(IndexSidebar.prototype, 'navItems', (items) => items.add('doingfb-adslot', LinkButton.component({ href: app.route('adslotProviders'), icon: 'fas fa-rectangle-ad' }, 'Merchant ads'), 90));
 });

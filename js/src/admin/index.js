@@ -49,7 +49,9 @@ function ensureAdminStyleOverrides() {
 
 app.initializers.add('doingfb-adslot', () => {
   ensureAdminStyleOverrides();
-  const extension = app.extensionData?.for?.('doingfb-adslot') || app.registry?.for?.('doingfb-adslot');
+  // Flarum 2 exposes the registration API on the app registry. The extension
+  // metadata object may exist too, but it does not provide register methods.
+  const extension = app.registry?.for?.('doingfb-adslot') || app.extensionData?.for?.('doingfb-adslot');
 
   if (!extension) {
     return;

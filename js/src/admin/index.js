@@ -1,5 +1,7 @@
 import app from 'flarum/admin/app';
 import ExtensionPanel from './components/ExtensionPanel';
+import RenewalsPage from './components/RenewalsPage';
+import ReviewsPage from './components/ReviewsPage';
 
 const ADMIN_STYLE_OVERRIDE_ID = 'doingfb-adslot-admin-style-overrides';
 
@@ -49,48 +51,46 @@ function ensureAdminStyleOverrides() {
 
 app.initializers.add('doingfb-adslot', () => {
   ensureAdminStyleOverrides();
-  // Flarum 2 exposes the registration API on the app registry. The extension
-  // metadata object may exist too, but it does not provide register methods.
-  const extension = app.registry?.for?.('doingfb-adslot') || app.extensionData?.for?.('doingfb-adslot');
 
-  if (!extension) {
-    return;
-  }
+  app.routes.adslotRenewals = {
+    path: '/adslot/renewals',
+    component: RenewalsPage,
+  };
 
-  if (typeof extension.registerPage === 'function') {
-    extension.registerPage(ExtensionPanel);
-  }
+  app.routes.adslotReviews = {
+    path: '/adslot/reviews',
+    component: ReviewsPage,
+  };
 
-  if (typeof extension.registerSetting === 'function') {
-    extension.registerSetting({
+  const extension = app.registry.for('doingfb-adslot');
+
+  extension
+    .registerSetting({
       setting: 'doingfb-adslot.baseMonthlyFee',
       type: 'number',
       label: 'Monthly advertising price (points)',
       help: 'Default monthly price used when a new advertisement is submitted.',
-    });
-    extension.registerSetting({
+    })
+    .registerSetting({
       setting: 'doingfb-adslot.noticeBarEnabled',
       type: 'boolean',
       label: 'Show provider page notice',
-    });
-  }
-
-  if (typeof extension.registerPermission === 'function') {
-    extension.registerPermission(
+    })
+    .registerPermission(
       {
         icon: 'fas fa-rectangle-ad',
         label: app.translator.trans('doingfb-adslot.admin.permissions.review_ads'),
         permission: 'doingfb-adslot.reviewAds',
       },
       'moderate'
-    );
-    extension.registerPermission(
+    )
+    .registerPermission(
       {
         icon: 'fas fa-bullhorn',
         label: app.translator.trans('doingfb-adslot.admin.permissions.manage_ads'),
         permission: 'doingfb-adslot.manageAds',
       },
       'moderate'
-    );
-  }
+    )
+    .registerPage(ExtensionPanel);
 });

@@ -1,11 +1,11 @@
 const app = flarum.core.app;
-const IndexSidebar = flarum.reg.get('core', 'forum/components/IndexSidebar');
-const extend = flarum.reg.get('core', 'common/extend');
-const LinkButton = flarum.reg.get('core', 'common/components/LinkButton');
-const Modal = flarum.reg.get('core', 'common/components/Modal');
+const IndexSidebar = flarum.core.compat['forum/components/IndexSidebar'];
+const extend = flarum.core.compat['common/extend'];
+const LinkButton = flarum.core.compat['common/components/LinkButton'];
+const Modal = flarum.core.compat['common/components/Modal'];
 
 class ApplyModal extends Modal {
-  oninit() { this.form = { merchantName: '', imagePath: '', targetUrl: '', contactValue: '', durationMonths: 1 }; this.busy = false; this.error = ''; }
+  oninit(vnode) { super.oninit(vnode); this.form = { merchantName: '', imagePath: '', targetUrl: '', contactValue: '', durationMonths: 1 }; this.busy = false; this.error = ''; }
   view() {
     const field = (label, key, type = 'text') => m('.Form-group', [m('label', label), m('input.FormControl', { required: true, type, value: this.form[key], oninput: (e) => { this.form[key] = e.target.value; } })]);
     return m('.Modal.modal-dialog', m('.Modal-content', [m('.Modal-header', m('h3', 'AdSlot application')), m('.Modal-body', m('form.Form', { onsubmit: (e) => this.submit(e) }, [field('Merchant name', 'merchantName'), field('Image URL', 'imagePath', 'url'), field('Target URL', 'targetUrl', 'url'), field('Contact', 'contactValue'), m('.Form-group', [m('label', 'Duration'), m('select.FormControl', { value: this.form.durationMonths, onchange: (e) => { this.form.durationMonths = Number(e.target.value); } }, [1, 3, 6, 12].map((n) => m('option', { value: n }, `${n} month(s)`)))]), this.error ? m('.Alert.Alert--error', this.error) : null, m('.Form-group', [m('button.Button', { type: 'button', onclick: () => app.modal.close() }, 'Cancel'), m('button.Button.Button--primary', { type: 'submit', disabled: this.busy }, this.busy ? 'Submitting...' : 'Submit application')])]))]));

@@ -54,32 +54,40 @@ app.initializers.add('doingfb-adslot', () => {
   app.routes.adslotRenewals = { path: '/adslot/renewals', component: RenewalsPage };
   app.routes.adslotReviews = { path: '/adslot/reviews', component: ReviewsPage };
 
-  const extension = app.extensionData.for('doingfb-adslot');
+  const extension = app.extensionData?.for?.('doingfb-adslot') || app.registry?.for?.('doingfb-adslot');
 
-  // Flarum 2 renders an extension's main admin screen through registerPage.
-  // registerSetting alone only contributes fields to the generic settings page.
-  extension
-    .registerPage(ExtensionPanel)
-    .registerSetting({
+  if (!extension) {
+    return;
+  }
+
+  if (typeof extension.registerPage === 'function') {
+    extension.registerPage(ExtensionPanel);
+  }
+
+  if (typeof extension.registerSetting === 'function') {
+    extension.registerSetting({
       setting: 'doingfb-adslot.baseMonthlyFee',
       type: 'number',
       label: 'Monthly advertising price (points)',
       help: 'Default monthly price used when a new advertisement is submitted.',
-    })
-    .registerSetting({
+    });
+    extension.registerSetting({
       setting: 'doingfb-adslot.noticeBarEnabled',
       type: 'boolean',
       label: 'Show provider page notice',
-    })
-    .registerPermission(
+    });
+  }
+
+  if (typeof extension.registerPermission === 'function') {
+    extension.registerPermission(
       {
         icon: 'fas fa-rectangle-ad',
         label: app.translator.trans('doingfb-adslot.admin.permissions.review_ads'),
         permission: 'doingfb-adslot.reviewAds',
       },
       'moderate'
-    )
-    .registerPermission(
+    );
+    extension.registerPermission(
       {
         icon: 'fas fa-bullhorn',
         label: app.translator.trans('doingfb-adslot.admin.permissions.manage_ads'),
@@ -87,4 +95,5 @@ app.initializers.add('doingfb-adslot', () => {
       },
       'moderate'
     );
+  }
 });

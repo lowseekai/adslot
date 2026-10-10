@@ -1,5 +1,5 @@
 import app from 'flarum/admin/app';
-import AdminPage from 'flarum/admin/components/AdminPage';
+import AdminPage from 'flarum/common/components/Page';
 import Button from 'flarum/common/components/Button';
 import LinkButton from 'flarum/common/components/LinkButton';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';

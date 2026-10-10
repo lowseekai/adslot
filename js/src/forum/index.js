@@ -1,6 +1,6 @@
 const app = flarum.core.app;
 const IndexSidebar = flarum.reg.get('core', 'forum/components/IndexSidebar');
-const extend = flarum.reg.get('core', 'common/extend');
+const extend = flarum.reg.get('core', 'common/extend').extend;
 const LinkButton = flarum.reg.get('core', 'common/components/LinkButton');
 const Modal = flarum.reg.get('core', 'common/components/Modal');
 
